@@ -5,7 +5,7 @@
 int
 main()
 {
-	PParllel::Application app;
+	PParallel::Application app;
 
 	try
 	{
