@@ -12,7 +12,7 @@
 
 namespace PParallel
 {
-    static float const s_moveSpeed = 40.0f;
+    static float const s_moveSpeed   = 0.001f;
     static float const s_rotateSpeed = 0.1f;
 
     class Camera
@@ -29,29 +29,29 @@ namespace PParallel
             updateCameraOrientation();
         }
 
-        void update(GLFWwindow* window, float deltaTime)
+        void update(float deltaTime)
         {
             float distance = deltaTime * s_moveSpeed;
-            if (Input::IsKeyPressed(window, PP_KEY_W))
+            if (Input::IsKeyPressed(PP_KEY_W))
             {
                 m_position += m_front * distance;
             }
-            if (Input::IsKeyPressed(window, PP_KEY_A))
+            if (Input::IsKeyPressed(PP_KEY_A))
             {
                 m_position += -m_right * distance;
             }
-            if (Input::IsKeyPressed(window, PP_KEY_S))
+            if (Input::IsKeyPressed(PP_KEY_S))
             {
                 m_position += -m_front * distance;
             }
-            if (Input::IsKeyPressed(window, PP_KEY_D))
+            if (Input::IsKeyPressed(PP_KEY_D))
             {
                 m_position += m_right * distance;
             }
 
-            if (Input::IsMousePressed(window, PP_MOUSE_BUTTON_LEFT))
+            if (Input::IsMousePressed(PP_MOUSE_BUTTON_LEFT))
             {
-                glm::vec2 pos = Input::GetMousePosition(window);
+                glm::vec2 pos = Input::GetMousePosition();
                 if (m_rotating)
                 {
                     m_yaw += (pos.x - m_lastPos.x) * s_rotateSpeed;

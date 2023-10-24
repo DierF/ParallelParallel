@@ -11,22 +11,22 @@ namespace PParallel
 	class Input
 	{
 	public:
-		static bool IsKeyPressed(GLFWwindow* window, KeyCode key)
+		static bool IsKeyPressed(KeyCode key)
 		{
-			int state = glfwGetKey(window, key);
+			int state = glfwGetKey(Window::get().nativeWindow(), key);
 			return state == GLFW_PRESS;
 		}
 
-		static bool IsMousePressed(GLFWwindow* window, MouseCode mouse)
+		static bool IsMousePressed(MouseCode mouse)
 		{
-			int state = glfwGetMouseButton(window, mouse);
+			int state = glfwGetMouseButton(Window::get().nativeWindow(), mouse);
 			return state == GLFW_PRESS;
 		}
 
-		static glm::vec2 GetMousePosition(GLFWwindow* window)
+		static glm::vec2 GetMousePosition()
 		{
 			double x, y;
-			glfwGetCursorPos(window, &x, &y);
+			glfwGetCursorPos(Window::get().nativeWindow(), &x, &y);
 			return { (float)x, (float)y };
 		}
 	};

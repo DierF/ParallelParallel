@@ -48,11 +48,11 @@ namespace PParallel
 			glEnableVertexAttribArray(0);
 		}
 
-		void draw(GLFWwindow* window, float deltaTime)
+		void draw(float deltaTime)
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			m_camera.update(window, deltaTime);
+			m_camera.update(deltaTime);
 
 			m_shaderProgram.updateUniformMat4(m_shaderProgram.getUniformLocation("u_viewProjection"),
 											  m_camera.getViewProjectionMatrix());

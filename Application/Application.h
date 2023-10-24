@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <format>
+
 #include <glm/glm.hpp>
 
 #include "Application/Window.h"
@@ -32,9 +35,11 @@ namespace PParallel
 			m_timer.reset();
 			while (not m_window.shouldClose())
 			{
-				m_renderer.draw(m_window.get(), m_timer.elapsedMilliseconds());
-				m_window.update();
+				float deltaTime = m_timer.elapsedMilliseconds();
 				m_timer.reset();
+				std::cout << std::format("FPS: {}\n", static_cast<int>(1000.0f / deltaTime));
+				m_renderer.draw(deltaTime);
+				m_window.update();
 			}
 		}
 
