@@ -6,9 +6,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Core/Input.h"
-#include "Core/KeyCode.h"
-#include "Core/Time.h"
+#include "Application/Input.h"
+#include "Application/KeyCode.h"
+#include "Application/Time.h"
 
 namespace PParallel
 {

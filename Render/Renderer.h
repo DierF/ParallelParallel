@@ -7,11 +7,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "Core/FileReader.h"
 #include "Core/Camera.h"
-#include "Render/ShaderProgram.h"
-#include "Render/VertexBuffer.h"
-#include "Render/VertexArray.h"
+#include "Core/Missile.h"
+#include "Render/Shader.h"
 
 namespace PParallel
 {
@@ -31,21 +29,9 @@ namespace PParallel
 				throw std::runtime_error("failed to initialize GLAD");
 			}
 
-			m_shaderProgram.init();
-			m_vertexBuffer.init();
-			m_vertexArray.init();
+			m_shader.init();
 
-			float vertices[9]
-			{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
-			};
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-			glEnableVertexAttribArray(0);
+			m_missile.init();
 		}
 
 		void draw(float deltaTime)
@@ -54,17 +40,16 @@ namespace PParallel
 
 			m_camera.update(deltaTime);
 
-			m_shaderProgram.updateUniformMat4(m_shaderProgram.getUniformLocation("u_viewProjection"),
+			m_shader.updateUniformMat4(m_shader.getUniformLocation("u_viewProjection"),
 											  m_camera.getViewProjectionMatrix());
-			m_shaderProgram.bind();
-			m_vertexArray.bind();
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+
+			m_missile.rotate(0.005f * deltaTime, glm::vec3(0.0f, 0.0f, 1.0f));
+			m_missile.render(m_shader);
 		}
 
 	private:
-		VertexArray   m_vertexArray;
-		VertexBuffer  m_vertexBuffer;
-		ShaderProgram m_shaderProgram;
+		Shader		  m_shader;
 		Camera		  m_camera;
+		Missile       m_missile;
 	};
 }

@@ -6,19 +6,15 @@
 #include <glm/glm.hpp>
 
 #include "Application/Window.h"
+#include "Application/Time.h"
 #include "Render/Renderer.h"
-#include "Core/Time.h"
 
 namespace PParallel
 {
 	class Application
 	{
 	public:
-		Application()
-		{
-			init();
-			run();
-		}
+		Application() = default;
 
 		~Application()
 		{

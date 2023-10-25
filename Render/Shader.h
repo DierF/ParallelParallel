@@ -7,23 +7,23 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Core/FileReader.h"
+#include "Application/FileReader.h"
 
 namespace PParallel
 {
-	class ShaderProgram
+	class Shader
 	{
 	public:
-		ShaderProgram() = default;
+		Shader() = default;
 
-		~ShaderProgram()
+		~Shader()
 		{
-			glDeleteProgram(m_shaderProgram);
+			glDeleteProgram(m_shader);
 		}
 
 		void init()
 		{
-			m_shaderProgram = glCreateProgram();
+			m_shader = glCreateProgram();
 			compile();
 		}
 
@@ -42,36 +42,40 @@ namespace PParallel
 			glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 			glCompileShader(fragmentShader);
 
-			glAttachShader(m_shaderProgram, vertexShader);
-			glAttachShader(m_shaderProgram, fragmentShader);
-			glLinkProgram(m_shaderProgram);
-			glUseProgram(m_shaderProgram);
+			glAttachShader(m_shader, vertexShader);
+			glAttachShader(m_shader, fragmentShader);
+			glLinkProgram(m_shader);
+			glUseProgram(m_shader);
 
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 		}
 
-		void bind()
+		void use()
 		{
-			glUseProgram(m_shaderProgram);
+			glUseProgram(m_shader);
 		}
 
 		GLint getUniformLocation(std::string const& name)
 		{
-			return glGetUniformLocation(m_shaderProgram, name.c_str());
+			return glGetUniformLocation(m_shader, name.c_str());
 		}
 
 		void updateUniformMat4(GLint location, glm::mat4 const& mat)
 		{
 			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 		}
+		void updateUniformVec3(GLint location, glm::vec3 const& vec)
+		{
+			glUniform3f(location, vec.x, vec.y, vec.z);
+		}
 
 		GLuint get()
 		{
-			return m_shaderProgram;
+			return m_shader;
 		}
 
 	private:
-		GLuint m_shaderProgram;
+		GLuint m_shader;
 	};
 }

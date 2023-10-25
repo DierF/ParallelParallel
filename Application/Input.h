@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 
-#include "Core/KeyCode.h"
-#include "Core/MouseCode.h"
+#include "Application/KeyCode.h"
+#include "Application/MouseCode.h"
 #include "Application/Window.h"
 
 namespace PParallel

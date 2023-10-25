@@ -18,13 +18,16 @@ namespace PParallel
 		void init()
 		{
 			glGenVertexArrays(1, &m_vertexArray);
-
-			bind();
 		}
 
 		void bind()
 		{
 			glBindVertexArray(m_vertexArray);
+		}
+
+		void unbind()
+		{
+			glBindVertexArray(0);
 		}
 
 	private:
