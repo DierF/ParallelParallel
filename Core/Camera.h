@@ -6,15 +6,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Application/Input.h"
-#include "Application/KeyCode.h"
-#include "Application/Time.h"
 
 namespace PParallel
 {
-    static float const s_moveSpeed   = 0.001f;
-    static float const s_rotateSpeed = 0.1f;
-
     class Camera
     {
     public:
@@ -29,42 +23,12 @@ namespace PParallel
             updateCameraOrientation();
         }
 
-        void update(float deltaTime)
+        void update(glm::vec3 const& deltaPosition, float deltaYaw, float deltaPitch)
         {
-            float distance = deltaTime * s_moveSpeed;
-            if (Input::IsKeyPressed(PP_KEY_W))
-            {
-                m_position += m_front * distance;
-            }
-            if (Input::IsKeyPressed(PP_KEY_A))
-            {
-                m_position += -m_right * distance;
-            }
-            if (Input::IsKeyPressed(PP_KEY_S))
-            {
-                m_position += -m_front * distance;
-            }
-            if (Input::IsKeyPressed(PP_KEY_D))
-            {
-                m_position += m_right * distance;
-            }
-
-            if (Input::IsMousePressed(PP_MOUSE_BUTTON_LEFT))
-            {
-                glm::vec2 pos = Input::GetMousePosition();
-                if (m_rotating)
-                {
-                    m_yaw += (pos.x - m_lastPos.x) * s_rotateSpeed;
-                    m_pitch += (pos.y - m_lastPos.y) * s_rotateSpeed;
-                    glm::clamp(m_pitch, -90.0f, 90.0f);
-                }
-                m_rotating = true;
-                m_lastPos = pos;
-            }
-            else
-            {
-                m_rotating = false;
-            }
+            m_position += deltaPosition;
+            m_yaw      += deltaYaw;
+            m_pitch    += deltaPitch;
+            glm::clamp(m_pitch, -90.0f, 90.0f);
 
             updateCameraOrientation();
         }
@@ -82,6 +46,21 @@ namespace PParallel
         glm::mat4 getViewProjectionMatrix()
         {
             return getProjectionMatrix() * getViewMatrix();
+        }
+
+        glm::vec3 getFront()
+        {
+            return m_front;
+        }
+
+        glm::vec3 getRight()
+        {
+            return m_right;
+        }
+
+        glm::vec3 getUp()
+        {
+            return m_up;
         }
 
     private:
@@ -102,13 +81,11 @@ namespace PParallel
         glm::vec3 m_front;
         glm::vec3 m_right;
         glm::vec3 m_up          = glm::vec3(0.0f, 1.0f, 0.0f);
-        float m_yaw          = 0.0f;// horizontal
-        float m_pitch        = 0.0f;// vertical
-        float m_fov          = 45.0f;
-        float m_aspectRatio  = 16.0f / 9.0f;
-        float m_nearPlane    = 0.1f;
-        float m_farPlane     = 1000.0f;
-        glm::vec2 m_lastPos;
-        bool m_rotating      = false;
+        float m_yaw             = 0.0f;// horizontal
+        float m_pitch           = 0.0f;// vertical
+        float m_fov             = 45.0f;
+        float m_aspectRatio     = 16.0f / 9.0f;
+        float m_nearPlane       = 0.1f;
+        float m_farPlane        = 1000.0f;
     };
 }

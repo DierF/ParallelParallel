@@ -7,7 +7,7 @@
 
 #include "Application/Window.h"
 #include "Application/Time.h"
-#include "Render/Renderer.h"
+#include "Core/Scene.h"
 
 namespace PParallel
 {
@@ -16,14 +16,12 @@ namespace PParallel
 	public:
 		Application() = default;
 
-		~Application()
-		{
-		}
+		~Application() = default;
 
 		void init()
 		{
 			m_window.init();
-			m_renderer.init();
+			m_scene.init();
 		}
 
 		void run()
@@ -34,14 +32,14 @@ namespace PParallel
 				float deltaTime = m_timer.elapsedMilliseconds();
 				m_timer.reset();
 				std::cout << std::format("FPS: {}\n", static_cast<int>(1000.0f / deltaTime));
-				m_renderer.draw(deltaTime);
+				m_scene.update(deltaTime);
 				m_window.update();
 			}
 		}
 
 	private:
 		Window    m_window;
-		Renderer  m_renderer;
+		Scene	  m_scene;
 		Timer     m_timer;
 	};
 }

@@ -65,6 +65,7 @@ namespace PParallel
 		{
 			glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 		}
+
 		void updateUniformVec3(GLint location, glm::vec3 const& vec)
 		{
 			glUniform3f(location, vec.x, vec.y, vec.z);
