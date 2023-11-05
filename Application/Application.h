@@ -18,12 +18,6 @@ namespace PParallel
 
 		~Application() = default;
 
-		void init()
-		{
-			m_window.init();
-			m_scene.init();
-		}
-
 		void run()
 		{
 			m_timer.reset();
@@ -38,8 +32,8 @@ namespace PParallel
 		}
 
 	private:
-		Window    m_window;
-		Scene	  m_scene;
-		Timer     m_timer;
+		Window m_window;
+		Scene  m_scene;
+		Timer  m_timer;
 	};
 }

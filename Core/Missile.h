@@ -19,20 +19,13 @@ namespace PParallel
                 glm::vec3 color    = glm::vec3(1.0f, 0.5f, 0.0f))
             : m_position(position), m_rotation(rotation), m_color(color)
         {
-        }
-
-        void init()
-        {
-            m_vertexBuffer.init();
-            m_vertexArray.init();
-
             m_vertexArray.bind();
             m_vertexBuffer.bind();
 
             // Calculate the vertices of the right triangle based on m_position and m_rotation
-            glm::vec3 v1 = glm::vec3( 0.5f,  0.28867513459f, 0.0f);
-            glm::vec3 v2 = glm::vec3(-0.5f,  0.28867513459f, 0.0f);
-            glm::vec3 v3 = glm::vec3( 0.0f, -0.57735026919f, 0.0f);
+            glm::vec3 v1 = glm::vec3(0.5f, 0.28867513459f, 0.0f);
+            glm::vec3 v2 = glm::vec3(-0.5f, 0.28867513459f, 0.0f);
+            glm::vec3 v3 = glm::vec3(0.0f, -0.57735026919f, 0.0f);
 
             // Apply the transformation matrix m_rotation to the vertices
             v1 = glm::vec3(m_rotation * glm::vec4(v1, 1.0f));

@@ -8,16 +8,14 @@ namespace PParallel
 	class VertexArray
 	{
 	public:
-		VertexArray() = default;
+		VertexArray()
+		{
+			glGenVertexArrays(1, &m_vertexArray);
+		}
 
 		~VertexArray()
 		{
 			glDeleteVertexArrays(1, &m_vertexArray);
-		}
-
-		void init()
-		{
-			glGenVertexArrays(1, &m_vertexArray);
 		}
 
 		void bind()

@@ -18,14 +18,6 @@ namespace PParallel
 		
 		~MissileGroup() = default;
 
-		void init()
-		{
-			for (auto& missile : m_missiles)
-			{
-				missile.init();
-			}
-		}
-
 		void render(Shader& shader)
 		{
 			for (auto& missile : m_missiles)

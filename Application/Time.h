@@ -17,11 +17,15 @@ namespace PParallel
 			m_start = std::chrono::high_resolution_clock::now();
 		}
 
-		float elapsedMilliseconds()
+		float elapsedNanoseconds()
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>
-					(std::chrono::high_resolution_clock::now() - m_start).count()
-					* 0.001f * 0.001f;
+				(std::chrono::high_resolution_clock::now() - m_start).count();
+		}
+
+		float elapsedMilliseconds()
+		{
+			return elapsedNanoseconds() * 0.001f * 0.001f;
 		}
 
 		float elapsedSeconds()

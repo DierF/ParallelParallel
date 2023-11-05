@@ -8,16 +8,14 @@ namespace PParallel
 	class VertexBuffer
 	{
 	public:
-		VertexBuffer() = default;
+		VertexBuffer()
+		{
+			glGenBuffers(1, &m_vertexBuffer);
+		}
 
 		~VertexBuffer()
 		{
 			glDeleteBuffers(1, &m_vertexBuffer);
-		}
-
-		void init()
-		{
-			glGenBuffers(1, &m_vertexBuffer);
 		}
 
 		void bind()

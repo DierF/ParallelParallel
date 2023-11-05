@@ -14,15 +14,7 @@ namespace PParallel
 		Window()
 		{
 			s_instance = this;
-		}
 
-		~Window()
-		{
-			glfwTerminate();
-		}
-
-		void init()
-		{
 			if (not glfwInit())
 			{
 				throw std::runtime_error("glfwInit failed");
@@ -39,6 +31,16 @@ namespace PParallel
 			glfwMakeContextCurrent(m_window);
 
 			glfwSwapInterval(0);
+
+			if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			{
+				throw std::runtime_error("failed to initialize GLAD");
+			}
+		}
+
+		~Window()
+		{
+			glfwTerminate();
 		}
 
 		void update()
@@ -58,7 +60,7 @@ namespace PParallel
 		}
 
 	private:
-		GLFWwindow* m_window;
+		GLFWwindow* m_window = nullptr;
 
 	public:
 		static Window& get()
@@ -69,6 +71,6 @@ namespace PParallel
 	private:
 		static int const s_width  = 1600;
 		static int const s_height = 900;
-		static Window* s_instance;
+		static Window*   s_instance;
 	};
 }

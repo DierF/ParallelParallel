@@ -14,17 +14,15 @@ namespace PParallel
 	class Shader
 	{
 	public:
-		Shader() = default;
+		Shader()
+		{
+			m_shader = glCreateProgram();
+			compile();
+		};
 
 		~Shader()
 		{
 			glDeleteProgram(m_shader);
-		}
-
-		void init()
-		{
-			m_shader = glCreateProgram();
-			compile();
 		}
 
 		void compile()

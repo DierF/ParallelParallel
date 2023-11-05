@@ -10,20 +10,15 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene() = default;
-
-		~Scene() = default;
-
-		void init()
+		Scene()
 		{
-			m_renderer.init();
-			m_attackers.init();
-			m_interceptors.init();
 			for (auto& interceptor : m_interceptors)
 			{
 				interceptor.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
 			}
-		}
+		};
+
+		~Scene() = default;
 
 		void update(float deltaTime)
 		{
