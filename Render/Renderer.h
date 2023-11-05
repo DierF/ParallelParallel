@@ -9,6 +9,7 @@
 
 #include "Application/Time.h"
 #include "Core/Missile.h"
+#include "Core/MissileGroup.h"
 #include "Core/CameraController.h"
 #include "Render/Shader.h"
 
@@ -39,6 +40,11 @@ namespace PParallel
 		void renderMissile(Missile& missile)
 		{
 			missile.render(m_shader);
+		}
+
+		void renderMissiles(MissileGroup& missileGroup)
+		{
+			missileGroup.render(m_shader);
 		}
 
 		void renderCamera(CameraController& cameraController)

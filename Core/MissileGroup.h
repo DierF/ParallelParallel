@@ -1,0 +1,55 @@
+#pragma once
+
+#include <vector>
+
+#include "Core/Missile.h"
+#include "Core/MissileController.h"
+#include "Render/Shader.h"
+
+namespace PParallel
+{
+	class MissileGroup
+	{
+	public:
+		MissileGroup(std::size_t cnt = 1ULL)
+			: m_missiles(cnt)
+		{
+		};
+		
+		~MissileGroup() = default;
+
+		void init()
+		{
+			for (auto& missile : m_missiles)
+			{
+				missile.init();
+			}
+		}
+
+		void render(Shader& shader)
+		{
+			for (auto& missile : m_missiles)
+			{
+				missile.render(shader);
+			}
+		}
+
+		auto begin()
+		{
+			return m_missiles.begin();
+		}
+
+		auto end()
+		{
+			return m_missiles.begin();
+		}
+
+		auto size()
+		{
+			return m_missiles.size();
+		}
+
+	private:
+		std::vector<Missile> m_missiles;
+	};
+}

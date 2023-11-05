@@ -70,6 +70,11 @@ namespace PParallel
             m_rotation = glm::rotate(m_rotation, angle, axis);
         }
 
+        void reset(glm::vec3 const& position)
+        {
+            m_position = position;
+        }
+
         void render(Shader& shader)
         {
             glm::mat4 model(1.0f);
