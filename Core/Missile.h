@@ -15,8 +15,9 @@ namespace PParallel
     {
     public:
         Missile(glm::vec3 position = glm::vec3(0.0f),
-                glm::mat4 rotation = glm::mat4(1.0f))
-            : m_position(position), m_rotation(rotation)
+                glm::mat4 rotation = glm::mat4(1.0f),
+                glm::vec3 color    = glm::vec3(1.0f, 0.5f, 0.0f))
+            : m_position(position), m_rotation(rotation), m_color(color)
         {
         }
 
@@ -75,16 +76,19 @@ namespace PParallel
             m_position = position;
         }
 
+        void setColor(glm::vec3 const& color)
+        {
+            m_color = color;
+        }
+
         void render(Shader& shader)
         {
             glm::mat4 model(1.0f);
             model = glm::translate(model, m_position);
             model = model * m_rotation;
 
-            glm::vec3 color = glm::vec3(1.0f, 0.5f, 0.0f);
-
             shader.updateUniformMat4(shader.getUniformLocation("u_model"), model);
-            shader.updateUniformVec3(shader.getUniformLocation("u_color"), color);
+            shader.updateUniformVec3(shader.getUniformLocation("u_color"), m_color);
 
             m_vertexArray.bind();
             glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -93,6 +97,7 @@ namespace PParallel
     private:
         glm::vec3 m_position;
         glm::mat4 m_rotation;
+        glm::vec3 m_color;
         VertexArray m_vertexArray;
         VertexBuffer m_vertexBuffer;
     };

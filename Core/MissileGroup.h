@@ -41,12 +41,17 @@ namespace PParallel
 
 		auto end()
 		{
-			return m_missiles.begin();
+			return m_missiles.end();
 		}
 
 		auto size()
 		{
 			return m_missiles.size();
+		}
+
+		auto& operator[](std::size_t pos)
+		{
+			return m_missiles[pos];
 		}
 
 	private:

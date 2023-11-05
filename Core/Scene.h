@@ -19,6 +19,10 @@ namespace PParallel
 			m_renderer.init();
 			m_attackers.init();
 			m_interceptors.init();
+			for (auto& interceptor : m_interceptors)
+			{
+				interceptor.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+			}
 		}
 
 		void update(float deltaTime)
