@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 
 #include "Application/Time.h"
+#include "Core/Missile.h"
+#include "Core/CameraController.h"
 #include "Render/Shader.h"
 
 namespace PParallel
@@ -29,14 +31,19 @@ namespace PParallel
 			m_shader.init();
 		}
 
-		void draw()
+		void clear()
 		{
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
-		Shader& refShader()
+		void renderMissile(Missile& missile)
 		{
-			return m_shader;
+			missile.render(m_shader);
+		}
+
+		void renderCamera(CameraController& cameraController)
+		{
+			cameraController.render(m_shader);
 		}
 
 	private:

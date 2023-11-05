@@ -2,10 +2,11 @@
 
 #include <glm/glm.hpp>
 
-#include "Core/Camera.h"
 #include "Application/Input.h"
 #include "Application/KeyCode.h"
 #include "Application/Time.h"
+#include "Core/Camera.h"
+#include "Render/Shader.h"
 
 namespace PParallel
 {
@@ -62,9 +63,9 @@ namespace PParallel
             m_camera.update(deltaPosition, deltaYaw, deltaPitch);
         }
 
-        Camera& refCamera()
+        void render(Shader& shader)
         {
-            return m_camera;
+            m_camera.render(shader);
         }
 
 	private:

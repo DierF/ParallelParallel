@@ -23,16 +23,27 @@ namespace PParallel
 
 		void update(float deltaTime)
 		{
-			m_renderer.draw();
+			tickCamera(deltaTime);
+			tickObjects(deltaTime);
+			render();
+		}
 
+		void tickCamera(float deltaTime)
+		{
 			m_cameraController.update(deltaTime);
+		}
 
-			m_renderer.refShader().updateUniformMat4(m_renderer.refShader().getUniformLocation("u_viewProjection"),
-				m_cameraController.refCamera().getViewProjectionMatrix());
-
+		void tickObjects(float deltaTime)
+		{
 			float angle = 0.0005f * deltaTime;
 			MissileController::update(m_missile, glm::vec3(0.0f), angle, glm::vec3(0.0f, 0.0f, 1.0f));
-			m_missile.render(m_renderer.refShader());
+		}
+
+		void render()
+		{
+			m_renderer.clear();
+			m_renderer.renderCamera(m_cameraController);
+			m_renderer.renderMissile(m_missile);
 		}
 
 	private:

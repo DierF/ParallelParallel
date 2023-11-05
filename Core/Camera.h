@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "Render/Shader.h"
 
 namespace PParallel
 {
@@ -31,6 +32,11 @@ namespace PParallel
             glm::clamp(m_pitch, -90.0f, 90.0f);
 
             updateCameraOrientation();
+        }
+
+        void render(Shader& shader)
+        {
+            shader.updateUniformMat4(shader.getUniformLocation("u_viewProjection"), getViewProjectionMatrix());
         }
 
         glm::mat4 getViewMatrix()
