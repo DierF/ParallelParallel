@@ -87,6 +87,21 @@ namespace PParallel
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
 
+        glm::vec3 const& getPosition() const
+        {
+            return m_position;
+        }
+
+        glm::mat4 const& getRotation() const
+        {
+            return m_rotation;
+        }
+
+        glm::vec3 const& getColor() const
+        {
+            return m_color;
+        }
+
     private:
         glm::vec3 m_position;
         glm::mat4 m_rotation;

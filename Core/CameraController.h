@@ -69,7 +69,7 @@ namespace PParallel
         }
 
 	private:
-        glm::vec2 m_lastPos;
+        glm::vec2 m_lastPos = glm::vec2(0.0f);
         bool m_rotating = false;
 		Camera m_camera;
 	};
