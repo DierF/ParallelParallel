@@ -30,12 +30,16 @@ namespace PParallel
 
 			glfwMakeContextCurrent(m_window);
 
+			glfwSetKeyCallback(m_window, keyCallback);
+
 			glfwSwapInterval(0);
 
 			if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
 				throw std::runtime_error("failed to initialize GLAD");
 			}
+
+			glEnable(GL_DEPTH_TEST);
 		}
 
 		~Window()
@@ -45,8 +49,22 @@ namespace PParallel
 
 		void update()
 		{
+			if (m_escapeKeyPressed)
+			{
+				glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+			}
 			glfwSwapBuffers(m_window);
 			glfwPollEvents();
+		}
+
+		bool isSpaceKeyPressed()
+		{
+			if (m_spaceKeyPressed)
+			{
+				m_spaceKeyPressed = false;
+				return true;
+			}
+			return false;
 		}
 
 		bool shouldClose()
@@ -60,7 +78,25 @@ namespace PParallel
 		}
 
 	private:
-		GLFWwindow* m_window = nullptr;
+		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			if (action == GLFW_PRESS)
+			{
+				if (key == GLFW_KEY_SPACE)
+				{
+					s_instance->m_spaceKeyPressed = true;
+				}
+				else if (key == GLFW_KEY_ESCAPE)
+				{
+					s_instance->m_escapeKeyPressed = true;
+				}
+			}
+		}
+
+	private:
+		GLFWwindow* m_window           = nullptr;
+		bool        m_spaceKeyPressed  = false;
+		bool        m_escapeKeyPressed = false;
 
 	public:
 		static Window& get()
