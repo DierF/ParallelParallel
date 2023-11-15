@@ -8,6 +8,7 @@
 #include "Render/Shader.h"
 #include "Render/VertexArray.h"
 #include "Render/VertexBuffer.h"
+#include "Render/IndexBuffer.h"
 
 namespace PParallel
 {
@@ -21,63 +22,34 @@ namespace PParallel
         {
             m_vertexArray.bind();
             m_vertexBuffer.bind();
+            m_indexBuffer.bind();
 
-            // Vertices of a triangular dipyramid
-            glm::vec3 v1 = glm::vec3(0.0f, 1.0f, 0.0f);   // Tip
-            glm::vec3 v2 = glm::vec3(-0.5f, 0.0f, 0.5f);  // Bottom left
-            glm::vec3 v3 = glm::vec3(0.5f, 0.0f, 0.5f);   // Bottom right
-            glm::vec3 v4 = glm::vec3(0.5f, 0.0f, -0.5f);  // Top right
-            glm::vec3 v5 = glm::vec3(-0.5f, 0.0f, -0.5f); // Top left
-
-            // Apply the transformation matrix m_rotation to the vertices
-            v1 = glm::vec3(m_rotation * glm::vec4(v1, 1.0f));
-            v2 = glm::vec3(m_rotation * glm::vec4(v2, 1.0f));
-            v3 = glm::vec3(m_rotation * glm::vec4(v3, 1.0f));
-            v4 = glm::vec3(m_rotation * glm::vec4(v4, 1.0f));
-            v5 = glm::vec3(m_rotation * glm::vec4(v5, 1.0f));
-
-            // Translate the vertices to the object's position
-            v1 += m_position;
-            v2 += m_position;
-            v3 += m_position;
-            v4 += m_position;
-            v5 += m_position;
-
-            // Store the vertices in a vector
-            std::vector<float> vertices =
+            float vertices[] =
             {
-                v1.x, v1.y, v1.z,
-                v2.x, v2.y, v2.z,
-                v3.x, v3.y, v3.z,
-
-                v1.x, v1.y, v1.z,
-                v3.x, v3.y, v3.z,
-                v4.x, v4.y, v4.z,
-
-                v1.x, v1.y, v1.z,
-                v4.x, v4.y, v4.z,
-                v5.x, v5.y, v5.z,
-
-                v1.x, v1.y, v1.z,
-                v5.x, v5.y, v5.z,
-                v2.x, v2.y, v2.z,
-
-                v2.x, v2.y, v2.z,
-                v3.x, v3.y, v3.z,
-                v4.x, v4.y, v4.z,
-
-                v2.x, v2.y, v2.z,
-                v4.x, v4.y, v4.z,
-                v5.x, v5.y, v5.z
+                 0.0f, 1.0f,  0.0f, // Tip
+                -0.5f, 0.0f,  0.5f, // Bottom left
+                 0.5f, 0.0f,  0.5f, // Bottom right
+                 0.5f, 0.0f, -0.5f, // Top right
+                -0.5f, 0.0f, -0.5f  // Top left
             };
+            m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-            m_vertexBuffer.bufferData(vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+            unsigned indices[] =
+            {
+                0, 1, 2,
+                0, 2, 3,
+                0, 3, 4,
+                0, 4, 1,
+                1, 3, 2,
+                1, 3, 4
+            };
+            m_indexBuffer.bufferData(sizeof(indices), indices, GL_STATIC_DRAW);
 
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
 
-            m_vertexArray.unbind();
             m_vertexBuffer.unbind();
+            m_vertexArray.unbind();
         }
 
         void translate(glm::vec3 const& translation)
@@ -108,14 +80,14 @@ namespace PParallel
         void render(Shader& shader)
         {
             glm::mat4 model(1.0f);
-            model = glm::translate(model, m_position);
-            model = model * m_rotation;
+            model = glm::translate(model, m_position) * m_rotation;
 
             shader.updateUniformMat4(shader.getUniformLocation("u_model"), model);
             shader.updateUniformVec3(shader.getUniformLocation("u_color"), m_color);
 
             m_vertexArray.bind();
-            glDrawArrays(GL_TRIANGLES, 0, 3 * 6);
+            glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+            m_vertexArray.unbind();
         }
 
         glm::vec3 const& getPosition() const
@@ -139,5 +111,6 @@ namespace PParallel
         glm::vec3    m_color;
         VertexArray  m_vertexArray;
         VertexBuffer m_vertexBuffer;
+        IndexBuffer  m_indexBuffer;
     };
 }

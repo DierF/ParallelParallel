@@ -2,12 +2,19 @@
 
 Final Project for CSCI 476
 
-(Currently Windows only!)
+A simulation of missile attacks and interceptions accelerated by parallel programming.
 
-Library included:
+Windows: (Visual Studio 2022 Recommended)
+run "cmake -S . -B build"
+.sln file will be generated in folder "build"
+
+Linux:
+run "cmake -S . -B build"
+Makefile will be generated in folder "build"
+run "make" in folder "build"
+executable "PParallel" will be generated in folder "build"
+
+3rd Party Library included:
 glfw
+glad
 glm
-
-Library required:
-VulkanSDK
-

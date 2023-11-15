@@ -87,6 +87,7 @@ namespace PParallel
 					m_interceptorTargets[i]->getPosition(), 0.02f * deltaTime))
 				{
 					MissileController::resetPosition(m_attackers[i], m_random.genVec3());
+					MissileController::resetPosition(m_interceptors[i], m_random.genVec3());
 				}
 			}
 		}
