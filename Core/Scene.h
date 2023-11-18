@@ -8,6 +8,7 @@
 #include "Core/CameraController.h"
 #include "Core/MissileGroup.h"
 #include "Core/Random.h"
+#include "Core/Ground.h"
 #include "Render/Renderer.h"
 
 namespace PParallel
@@ -15,22 +16,23 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene(std::size_t attackerCount    = 1000ULL,
-			  std::size_t interceptorCount = 1000ULL)
+		Scene(std::size_t attackerCount    = 500ULL,
+			  std::size_t interceptorCount = 500ULL)
 			: m_attackers(attackerCount),
 			  m_attackerTargets(attackerCount),
 			  m_interceptors(interceptorCount),
 			  m_interceptorTargets(interceptorCount),
-			  m_paused(false)
+			  m_paused(true)
 		{
 			for (std::size_t i = 0ULL; i < attackerCount; ++i)
 			{
 				m_attackers[i].resetPosition(m_random.genVec3());
-				m_attackerTargets[i] = m_random.genVec3(50.0f);
+				m_attackerTargets[i] = m_random.genVec3(500.0f);
 			}
 
 			for (std::size_t i = 0ULL; i < interceptorCount; ++i)
 			{
+				m_interceptors[i].resetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 				m_interceptorTargets[i] = &m_attackers[i];
 			}
 
@@ -71,9 +73,9 @@ namespace PParallel
 		{
 			for (std::size_t i = 0ULL; i < m_attackers.size(); ++i)
 			{
-				if (MissileController::move(m_attackers[i], m_attackerTargets[i], 0.01f * deltaTime))
+				if (MissileController::move(m_attackers[i], m_attackerTargets[i], 0.009f * deltaTime))
 				{
-					MissileController::resetPosition(m_attackers[i], m_random.genVec3());
+					MissileController::resetPosition(m_attackers[i], glm::vec3(0.0f));
 				}
 			}
 		}
@@ -82,12 +84,11 @@ namespace PParallel
 		{
 			for (std::size_t i = 0ULL; i < m_interceptors.size(); ++i)
 			{
-				MissileController::aim(m_interceptors[i], m_interceptorTargets[i]->getPosition());
 				if (MissileController::move(m_interceptors[i],
-					m_interceptorTargets[i]->getPosition(), 0.02f * deltaTime))
+					m_interceptorTargets[i]->getPosition(), 0.01f * deltaTime))
 				{
 					MissileController::resetPosition(m_attackers[i], m_random.genVec3());
-					MissileController::resetPosition(m_interceptors[i], m_random.genVec3());
+					MissileController::resetPosition(m_interceptors[i], glm::vec3(0.0f, 0.0f, 0.0f));
 				}
 			}
 		}
@@ -98,12 +99,14 @@ namespace PParallel
 			m_renderer.renderCamera(m_cameraController);
 			m_renderer.renderMissiles(m_attackers);
 			m_renderer.renderMissiles(m_interceptors);
+			m_renderer.renderGround(m_ground);
 		}
 
 	private:
 		CameraController       m_cameraController;
 		Renderer               m_renderer;
 		Random                 m_random;
+		Ground                 m_ground;
 		MissileGroup	       m_attackers;
 		std::vector<glm::vec3> m_attackerTargets;
 		MissileGroup	       m_interceptors;

@@ -32,7 +32,7 @@ namespace PParallel
 
 		static void aim(Missile& missile, glm::vec3 const& target)
 		{
-			
+			resetRotation(missile, glm::lookAt(missile.getPosition(), target, glm::vec3(1.0f, 0.0f, 0.0f)));
 		}
 
 		static bool move(Missile& missile, glm::vec3 const& target, float speed)

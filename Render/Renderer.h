@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 #include "Application/Time.h"
+#include "Core/Ground.h"
 #include "Core/Missile.h"
 #include "Core/MissileGroup.h"
 #include "Core/CameraController.h"
@@ -40,6 +41,11 @@ namespace PParallel
 		void renderCamera(CameraController& cameraController)
 		{
 			cameraController.render(m_shader);
+		}
+
+		void renderGround(Ground& ground)
+		{
+			ground.render(m_shader);
 		}
 
 	private:

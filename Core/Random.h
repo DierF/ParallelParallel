@@ -9,7 +9,7 @@ namespace PParallel
 	class Random
 	{
 	public:
-		Random(int int_max = 0, float float_max = 50.0f)
+		Random(int int_max = 0, float float_max = 100.0f)
 			: m_rng(0),
 			  m_int_dist(0, int_max),
 			  m_float_dist(-float_max, float_max)
