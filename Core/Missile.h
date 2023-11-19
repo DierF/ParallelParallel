@@ -28,19 +28,19 @@ namespace PParallel
             {
                  0.0f, 1.0f,  0.0f, // Tip
                  0.0f, 0.0f,  0.0f,
-                 0.0f, 0.0f,  0.0f,
+                 1.0f, 0.5f,  0.0f,
                 -0.5f, 0.0f,  0.5f, // Bottom left
                  0.0f, 0.0f,  0.0f,
-                 0.0f, 0.0f,  0.0f,
+                 1.0f, 0.5f,  0.0f,
                  0.5f, 0.0f,  0.5f, // Bottom right
                  0.0f, 0.0f,  0.0f,
-                 0.0f, 0.0f,  0.0f,
+                 1.0f, 0.5f,  0.0f,
                  0.5f, 0.0f, -0.5f, // Top right
                  0.0f, 0.0f,  0.0f,
-                 0.0f, 0.0f,  0.0f,
+                 1.0f, 0.5f,  0.0f,
                 -0.5f, 0.0f, -0.5f,  // Top left
                  0.0f, 0.0f,  0.0f,
-                 0.0f, 0.0f,  0.0f
+                 1.0f, 0.5f,  0.0f,
             };
             m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -56,13 +56,11 @@ namespace PParallel
             m_indexBuffer.bufferData(sizeof(indices), indices, GL_STATIC_DRAW);
 
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
-
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(6 * sizeof(float)));
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
 
             m_vertexBuffer.unbind();
             m_vertexArray.unbind();
@@ -96,16 +94,19 @@ namespace PParallel
         void render(Shader& shader)
         {
             m_vertexArray.bind();
-
-            // Set the position and rotation as vertex attributes
-            //glEnableVertexAttribArray(1);
-            //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
-            //
-            //glEnableVertexAttribArray(2);
-            //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(6 * sizeof(float)));
-
+            m_vertexBuffer.bind();
+            glBufferSubData(GL_ARRAY_BUFFER,  3 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_position));
+            glBufferSubData(GL_ARRAY_BUFFER, 12 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_position));
+            glBufferSubData(GL_ARRAY_BUFFER, 21 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_position));
+            glBufferSubData(GL_ARRAY_BUFFER, 30 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_position));
+            glBufferSubData(GL_ARRAY_BUFFER, 39 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_position));
+            glBufferSubData(GL_ARRAY_BUFFER,  6 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_color));
+            glBufferSubData(GL_ARRAY_BUFFER, 15 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_color));
+            glBufferSubData(GL_ARRAY_BUFFER, 24 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_color));
+            glBufferSubData(GL_ARRAY_BUFFER, 33 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_color));
+            glBufferSubData(GL_ARRAY_BUFFER, 42 * sizeof(float), 3 * sizeof(float), glm::value_ptr(m_color));
             glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
-
+            m_vertexBuffer.unbind();
             m_vertexArray.unbind();
         }
 

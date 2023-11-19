@@ -17,7 +17,7 @@ mat4 translate(mat4 m, vec3 v)
 
 void main()
 {
-    mat4 model = translate(mat4(1.0), vec3(0.0, -1.0, 0.0));
+    mat4 model = translate(mat4(1.0), a_translation);
 
     gl_Position = u_viewProjection * model * vec4(a_position, 1.0);
 
