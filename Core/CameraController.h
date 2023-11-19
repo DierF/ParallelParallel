@@ -11,7 +11,7 @@
 namespace PParallel
 {
     static float s_moveSpeed = 0.01f;
-    static float s_rotateSpeed = 0.01f;
+    static float s_rotateSpeed = 0.05f;
 
 	class CameraController
 	{

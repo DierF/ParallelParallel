@@ -27,10 +27,20 @@ namespace PParallel
             float vertices[] =
             {
                  0.0f, 1.0f,  0.0f, // Tip
+                 0.0f, 0.0f,  0.0f,
+                 0.0f, 0.0f,  0.0f,
                 -0.5f, 0.0f,  0.5f, // Bottom left
+                 0.0f, 0.0f,  0.0f,
+                 0.0f, 0.0f,  0.0f,
                  0.5f, 0.0f,  0.5f, // Bottom right
+                 0.0f, 0.0f,  0.0f,
+                 0.0f, 0.0f,  0.0f,
                  0.5f, 0.0f, -0.5f, // Top right
-                -0.5f, 0.0f, -0.5f  // Top left
+                 0.0f, 0.0f,  0.0f,
+                 0.0f, 0.0f,  0.0f,
+                -0.5f, 0.0f, -0.5f,  // Top left
+                 0.0f, 0.0f,  0.0f,
+                 0.0f, 0.0f,  0.0f
             };
             m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -45,8 +55,14 @@ namespace PParallel
             };
             m_indexBuffer.bufferData(sizeof(indices), indices, GL_STATIC_DRAW);
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(6 * sizeof(float)));
 
             m_vertexBuffer.unbind();
             m_vertexArray.unbind();
@@ -79,14 +95,17 @@ namespace PParallel
 
         void render(Shader& shader)
         {
-            glm::mat4 model(1.0f);
-            model = glm::translate(model, m_position) * m_rotation;
-
-            shader.updateUniformMat4(shader.getUniformLocation("u_model"), model);
-            shader.updateUniformVec3(shader.getUniformLocation("u_color"), m_color);
-
             m_vertexArray.bind();
+
+            // Set the position and rotation as vertex attributes
+            //glEnableVertexAttribArray(1);
+            //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+            //
+            //glEnableVertexAttribArray(2);
+            //glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(6 * sizeof(float)));
+
             glDrawElements(GL_TRIANGLES, 3 * 6, GL_UNSIGNED_INT, 0);
+
             m_vertexArray.unbind();
         }
 

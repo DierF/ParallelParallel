@@ -16,8 +16,8 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene(std::size_t attackerCount    = 500ULL,
-			  std::size_t interceptorCount = 500ULL)
+		Scene(std::size_t attackerCount    = 1ULL,
+			  std::size_t interceptorCount = 1ULL)
 			: m_attackers(attackerCount),
 			  m_attackerTargets(attackerCount),
 			  m_interceptors(interceptorCount),
@@ -97,8 +97,8 @@ namespace PParallel
 		{
 			m_renderer.clearBuffer();
 			m_renderer.renderCamera(m_cameraController);
-			m_renderer.renderMissiles(m_attackers);
-			m_renderer.renderMissiles(m_interceptors);
+			//m_renderer.renderMissiles(m_attackers);
+			//m_renderer.renderMissiles(m_interceptors);
 			m_renderer.renderGround(m_ground);
 		}
 

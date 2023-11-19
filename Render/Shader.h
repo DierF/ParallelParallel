@@ -18,6 +18,7 @@ namespace PParallel
 		{
 			m_shader = glCreateProgram();
 			compile();
+			use();
 		};
 
 		~Shader()
