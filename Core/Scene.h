@@ -16,8 +16,8 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene(std::size_t attackerCount    = 1000ULL,
-			  std::size_t interceptorCount = 1000ULL)
+		Scene(std::size_t attackerCount    = 10000ULL,
+			  std::size_t interceptorCount = 10000ULL)
 			: m_attackers(attackerCount),
 			  m_attackerTargets(attackerCount),
 			  m_interceptors(interceptorCount),
@@ -26,19 +26,19 @@ namespace PParallel
 		{
 			for (std::size_t i = 0ULL; i < attackerCount; ++i)
 			{
-				m_attackers[i].resetPosition(m_random.genVec3());
+				MissileController::resetPosition(m_attackers[i], m_random.genVec3());
 				m_attackerTargets[i] = m_random.genVec3(500.0f);
 			}
 
 			for (std::size_t i = 0ULL; i < interceptorCount; ++i)
 			{
-				m_interceptors[i].resetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+				MissileController::resetPosition(m_interceptors[i], glm::vec3(0.0f, 0.0f, 0.0f));
 				m_interceptorTargets[i] = &m_attackers[i];
 			}
 
 			for (auto& interceptor : m_interceptors)
 			{
-				interceptor.setColor(glm::vec3(1.0f, 0.0f, 0.0f));
+				MissileController::resetColor(interceptor, glm::vec3(1.0f, 0.0f, 0.0f));
 			}
 		};
 
@@ -85,7 +85,7 @@ namespace PParallel
 			for (std::size_t i = 0ULL; i < m_interceptors.size(); ++i)
 			{
 				if (MissileController::move(m_interceptors[i],
-					m_interceptorTargets[i]->getPosition(), 0.01f * deltaTime))
+					m_interceptorTargets[i]->m_translation0, 0.01f * deltaTime))
 				{
 					MissileController::resetPosition(m_attackers[i], m_random.genVec3());
 					MissileController::resetPosition(m_interceptors[i], glm::vec3(0.0f, 0.0f, 0.0f));

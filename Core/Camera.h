@@ -29,6 +29,7 @@ namespace PParallel
             m_position += deltaPosition;
             m_yaw      += deltaYaw;
             m_pitch    += deltaPitch;
+            m_pitch = glm::clamp(m_pitch, -90.0f, 90.0f);
 
             updateCameraOrientation();
         }
@@ -81,7 +82,7 @@ namespace PParallel
         }
 
     private:
-        glm::vec3 m_position    = glm::vec3(0.0f, 0.1f, 1.0f);
+        glm::vec3 m_position    = glm::vec3(0.0f, 1.0f, 1.0f);
         glm::quat m_orientation = glm::quat(0.0f, 0.0f, -1.0f, 0.0f);
         glm::vec3 m_front;
         glm::vec3 m_right;
