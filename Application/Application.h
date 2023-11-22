@@ -14,9 +14,7 @@ namespace PParallel
 	class Application
 	{
 	public:
-		Application()
-		{
-		}
+		Application() = default;
 
 		~Application() = default;
 

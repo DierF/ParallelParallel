@@ -7,6 +7,9 @@
 #include "Application/Window.h"
 #include "Core/CameraController.h"
 #include "Core/MissileGroup.h"
+#include "Core/MissileController.h"
+#include "Core/ParticleSystem.h"
+#include "Core/ParticleController.h"
 #include "Core/Random.h"
 #include "Core/Ground.h"
 #include "Render/Renderer.h"
@@ -16,21 +19,21 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene(std::size_t attackerCount    = 10000ULL,
-			  std::size_t interceptorCount = 10000ULL)
-			: m_attackers(attackerCount),
-			  m_attackerTargets(attackerCount),
-			  m_interceptors(interceptorCount),
-			  m_interceptorTargets(interceptorCount),
+		Scene(std::size_t cnt = 100ULL)
+			: m_attackers(cnt),
+			  m_attackerTargets(cnt),
+			  m_interceptors(cnt),
+			  m_interceptorTargets(cnt),
+			  m_particles(cnt * 1000),
 			  m_paused(true)
 		{
-			for (std::size_t i = 0ULL; i < attackerCount; ++i)
+			for (std::size_t i = 0ULL; i < cnt; ++i)
 			{
 				MissileController::resetPosition(m_attackers[i], m_random.genVec3());
 				m_attackerTargets[i] = m_random.genVec3(500.0f);
 			}
 
-			for (std::size_t i = 0ULL; i < interceptorCount; ++i)
+			for (std::size_t i = 0ULL; i < cnt; ++i)
 			{
 				MissileController::resetPosition(m_interceptors[i], glm::vec3(0.0f, 0.0f, 0.0f));
 				m_interceptorTargets[i] = &m_attackers[i];
@@ -67,6 +70,7 @@ namespace PParallel
 		{
 			tickAttackers(deltaTime);
 			tickInterceptors(deltaTime);
+			tickParticles(deltaTime);
 		}
 
 		void tickAttackers(float deltaTime)
@@ -93,6 +97,14 @@ namespace PParallel
 			}
 		}
 
+		void tickParticles(float deltaTime)
+		{
+			for (std::size_t i = 0ULL; i < m_particles.size(); ++i)
+			{
+				ParticleController::translate(m_particles[i], glm::vec3(0.0f, i * 0.0005f * deltaTime, 0.0f));
+			}
+		}
+
 		void render()
 		{
 			m_renderer.clearBuffer();
@@ -100,6 +112,7 @@ namespace PParallel
 			m_renderer.renderMissiles(m_attackers);
 			m_renderer.renderMissiles(m_interceptors);
 			m_renderer.renderGround(m_ground);
+			m_renderer.renderParticles(m_particles);
 		}
 
 	private:
@@ -111,6 +124,7 @@ namespace PParallel
 		std::vector<glm::vec3> m_attackerTargets;
 		MissileGroup	       m_interceptors;
 		std::vector<Missile*>  m_interceptorTargets;
+		ParticleSystem         m_particles;
 		bool                   m_paused;
 	};
 }

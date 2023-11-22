@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "Core/Missile.h"
-#include "Core/MissileController.h"
 #include "Render/VertexArray.h"
 #include "Render/VertexBuffer.h"
 #include "Render/IndexBuffer.h"
@@ -91,7 +90,7 @@ namespace PParallel
 			return m_missiles.size();
 		}
 
-		Missile& operator[](std::size_t pos)
+		auto& operator[](std::size_t pos)
 		{
 			return m_missiles[pos];
 		}

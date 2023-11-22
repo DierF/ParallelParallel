@@ -57,7 +57,7 @@ namespace PParallel
             m_vertexArray.unbind();
         }
 
-        void render(Shader& shader)
+        void render()
         {
             m_vertexArray.bind();
             glDrawElements(GL_TRIANGLES, 3 * 2, GL_UNSIGNED_INT, 0);
