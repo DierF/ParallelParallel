@@ -8,7 +8,6 @@
 #include "Core/CameraController.h"
 #include "Core/MissileGroup.h"
 #include "Core/MissileController.h"
-#include "Core/ParticleController.h"
 #include "Core/Random.h"
 #include "Core/Ground.h"
 #include "Render/Renderer.h"
@@ -19,12 +18,9 @@ namespace PParallel
 	{
 	public:
 		Scene(std::size_t cnt = 1ULL)
-			: m_missileGroup(cnt),
+			: m_fireworks(cnt),
 			  m_paused(true)
 		{
-			for (std::size_t i = 0ULL; i < cnt; ++i)
-			{
-			}
 		};
 
 		~Scene() = default;
@@ -50,31 +46,29 @@ namespace PParallel
 
 		void tickObjects(float deltaTime)
 		{
-			tickAttackers(deltaTime);
+			for (auto& each : m_fireworks)
+			{
+				each.tick(deltaTime);
+			}
 		}
 
-		void tickAttackers(float deltaTime)
-		{
-			//for (std::size_t i = 0ULL; i < m_missileGroup.size(); ++i)
-			//{
-			//
-			//}
-		}
-		
 		void render()
 		{
 			m_renderer.clearBuffer();
 			m_renderer.renderCamera(m_cameraController);
-			m_renderer.renderMissiles(m_missileGroup);
+			for (auto& each : m_fireworks)
+			{
+				m_renderer.renderMissiles(each);
+			}
 			m_renderer.renderGround(m_ground);
 		}
 
 	private:
-		CameraController       m_cameraController;
-		Renderer               m_renderer;
-		Random                 m_random;
-		Ground                 m_ground;
-		MissileGroup	       m_missileGroup;
-		bool                   m_paused;
+		CameraController          m_cameraController;
+		Renderer                  m_renderer;
+		Random                    m_random;
+		Ground                    m_ground;
+		std::vector<MissileGroup> m_fireworks;
+		bool                      m_paused;
 	};
 }

@@ -14,4 +14,9 @@ namespace PParallel
         Particle p3;
         Particle p4;
     };
+
+    struct MissileStat
+    {
+        glm::vec3 velocity = glm::vec3(0.0f);
+    };
 }

@@ -38,6 +38,7 @@ namespace PParallel
         void render(Shader& shader)
         {
             shader.updateUniformMat4(shader.getUniformLocation("u_viewProjection"), getViewProjectionMatrix());
+            shader.updateUniformVec3(shader.getUniformLocation("u_cameraPosition"), m_position);
         }
 
         glm::mat4 getViewMatrix()
