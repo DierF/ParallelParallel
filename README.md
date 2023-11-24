@@ -2,7 +2,7 @@
 
 Final Project for CSCI 476
 
-A simulation of missile attacks and interceptions accelerated by parallel programming.
+A simulation of fireworks accelerated by parallel programming.
 
 Windows: (Visual Studio 2022 Recommended)
 run "cmake -S . -B build"

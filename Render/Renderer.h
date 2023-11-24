@@ -10,7 +10,6 @@
 #include "Application/Time.h"
 #include "Core/Ground.h"
 #include "Core/MissileGroup.h"
-#include "Core/ParticleSystem.h"
 #include "Core/CameraController.h"
 #include "Render/Shader.h"
 
@@ -41,11 +40,6 @@ namespace PParallel
 		void renderGround(Ground& ground)
 		{
 			ground.render();
-		}
-
-		void renderParticles(ParticleSystem& particles)
-		{
-			particles.render();
 		}
 
 	private:

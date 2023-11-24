@@ -11,17 +11,17 @@ namespace PParallel
 	public:
 		static void translate(Particle& particle, glm::vec3 const& translation)
 		{
-			particle.m_translation += translation;
+			particle.position += translation;
 		}
 
 		static void resetPosition(Particle& particle, glm::vec3 const& position)
 		{
-			particle.m_translation = position;
+			particle.position = position;
 		}
 
-		static void resetColor(Particle& particle, glm::vec3 const& color)
+		static void resetColor(Particle& particle, glm::vec4 const& color)
 		{
-			particle.m_color = color;
+			particle.color = color;
 		}
 	};
 }

@@ -27,6 +27,7 @@ namespace PParallel
         void update(glm::vec3 const& deltaPosition, float deltaYaw, float deltaPitch)
         {
             m_position += deltaPosition;
+            m_position.y = std::max(m_position.y, 1.0f);
             m_yaw      += deltaYaw;
             m_pitch    += deltaPitch;
             m_pitch = glm::clamp(m_pitch, -90.0f, 90.0f);
