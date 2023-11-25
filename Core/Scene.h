@@ -17,11 +17,28 @@ namespace PParallel
 	class Scene
 	{
 	public:
-		Scene(std::size_t cnt = 1ULL)
-			: m_fireworks(cnt),
-			  m_paused(true)
+		Scene()
+			: m_paused(true)
 		{
-		};
+			// Make sure no reallocation!
+			m_fireworks.reserve(1000);
+
+			m_fireworks.emplace_back(1000ULL,
+				                     glm::vec4(1.0f, 0.5f, 0.0f, 1.0f),
+				                     0.01f,
+				                     glm::vec3(0.0f, 0.0f, -50.0f),
+				                     0.005f);
+			m_fireworks.emplace_back(1000ULL,
+				                     glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+				                     0.01f,
+				                     glm::vec3(-20.0f, 0.0f, -50.0f),
+				                     0.005f);
+			m_fireworks.emplace_back(1000ULL,
+				                     glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+				                     0.01f,
+				                     glm::vec3(20.0f, 0.0f, -50.0f),
+				                     0.005f);
+		}
 
 		~Scene() = default;
 

@@ -94,13 +94,23 @@ namespace PParallel
 				{
 					s_instance->m_escapeKeyPressed = true;
 				}
+				else if (key == GLFW_KEY_L)
+				{
+					s_instance->m_eKeyPressed = true;
+				}
+				else if (key == GLFW_KEY_BACKSPACE)
+				{
+					s_instance->m_backSpaceKeyPressed = true;
+				}
 			}
 		}
 
 	private:
-		GLFWwindow* m_window           = nullptr;
-		bool        m_spaceKeyPressed  = false;
-		bool        m_escapeKeyPressed = false;
+		GLFWwindow* m_window              = nullptr;
+		bool        m_spaceKeyPressed     = false;
+		bool        m_escapeKeyPressed    = false;
+		bool        m_eKeyPressed         = false;
+		bool        m_backSpaceKeyPressed = false;
 
 	public:
 		static Window& get()

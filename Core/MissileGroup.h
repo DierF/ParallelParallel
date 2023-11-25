@@ -14,18 +14,27 @@ namespace PParallel
 	class MissileGroup
 	{
 	public:
-		MissileGroup(std::size_t cnt = 1000ULL)
-			: m_missiles(cnt), m_missileStats(cnt), m_exploded(false)
+		MissileGroup() = delete;
+
+		MissileGroup(std::size_t const cnt,
+			         glm::vec4 const&  color,
+			         float const       launchSpeed,
+			         glm::vec3 const&  launchPosition,
+		             float const       explodeSpeed)
+			: m_missiles(cnt), m_missileStats(cnt), m_exploded(false),
+			m_color(color), m_launchSpeed(launchSpeed),
+			m_launchPosition(launchPosition), m_explodeSpeed(explodeSpeed)
 		{
 			for (auto& each : m_missiles)
 			{
-				MissileController::resetPosition(each, glm::vec3(0.0f, 0.0f, -50.0f));
+				MissileController::resetPosition(each, m_launchPosition);
 				MissileController::resetSize(each);
+				MissileController::resetColor(each, m_color);
 			}
 
 			for (auto& each : m_missileStats)
 			{
-				each.velocity.y = 0.01f;
+				each.velocity.y = m_launchSpeed;
 			}
 
 			m_vertexArray.bind();
@@ -79,7 +88,7 @@ namespace PParallel
 			for (auto& each : m_missiles)
 			{
 				MissileController::resetPosition(each, explosionPoint);
-				MissileController::resetColor(each, glm::vec4(1.0f));
+				MissileController::resetColor(each, m_color);
 			}
 
 			// golden angle in radians
@@ -95,9 +104,7 @@ namespace PParallel
 				float x = std::cos(theta) * radiusAtY;
 				float z = std::sin(theta) * radiusAtY;
 
-				glm::vec3 velocity = glm::normalize(glm::vec3(x, y, z));
-
-				m_missileStats[i].velocity = velocity * 0.005f;
+				m_missileStats[i].velocity = glm::normalize(glm::vec3(x, y, z)) * m_explodeSpeed;
 			}
 		}
 
@@ -108,7 +115,7 @@ namespace PParallel
 
 			m_vertexBuffer.bufferData(m_missiles.size() * sizeof(Missile), m_missiles.data(), GL_STATIC_DRAW);
 
-			glDrawArrays(GL_POINTS, 0, m_missiles.size() * (sizeof(Missile) / sizeof(Particle)));
+			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(m_missiles.size()) * (sizeof(Missile) / sizeof(Particle)));
 			
 			m_vertexBuffer.unbind();
 			m_vertexArray.unbind();
@@ -118,15 +125,15 @@ namespace PParallel
 		{
 			for (auto& each : m_missiles)
 			{
-				MissileController::resetPosition(each, glm::vec3(0.0f, 0.0f, -50.0f));
+				MissileController::resetPosition(each, m_launchPosition);
 				MissileController::resetSize(each);
-				MissileController::resetColor(each, glm::vec4(1.0f));
+				MissileController::resetColor(each, m_color);
 			}
 
 			for (auto& each : m_missileStats)
 			{
 				each.velocity.x = 0.0f;
-				each.velocity.y = 0.01f;
+				each.velocity.y = m_launchSpeed;
 				each.velocity.z = 0.0f;
 			}
 			m_exploded = false;
@@ -157,6 +164,10 @@ namespace PParallel
 		VertexBuffer             m_vertexBuffer;
 		std::vector<Missile>     m_missiles;
 		std::vector<MissileStat> m_missileStats;
+		glm::vec4                m_color;
+		float                    m_launchSpeed;
+		glm::vec3                m_launchPosition;
+		float                    m_explodeSpeed;
 		bool                     m_exploded;
 	};
 }
