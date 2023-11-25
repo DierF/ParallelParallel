@@ -1,6 +1,8 @@
 #pragma once
 
 #include <list>
+#include <thread>
+#include <iterator>
 
 #include <glm/glm.hpp>
 
@@ -20,21 +22,14 @@ namespace PParallel
 		Scene()
 			: m_paused(true)
 		{
-			addFirework(1000ULL,
-				glm::vec4(1.0f, 0.5f, 0.0f, 1.0f),
-				0.01f,
-				glm::vec3(0.0f, 0.0f, -50.0f),
-				0.005f);
-			addFirework(1000ULL,
-				glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-				0.01f,
-				glm::vec3(-20.0f, 0.0f, -50.0f),
-				0.005f);
-			addFirework(1000ULL,
-				glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-				0.01f,
-				glm::vec3(20.0f, 0.0f, -50.0f),
-				0.005f);
+			for (int i = 0; i < 1200; ++i)
+			{
+				addFirework(m_random.genInt(100, 1000),
+					m_random.genColor(),
+					static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
+					m_random.genVec3(),
+					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+			}
 		}
 
 		~Scene() = default;
@@ -95,10 +90,39 @@ namespace PParallel
 
 		void tickObjects(float deltaTime)
 		{
+#if 1
+			int p = std::thread::hardware_concurrency();
+			std::vector<std::thread> threads;
+			auto iter = m_fireworks.begin();
+			for (int id = 0; id < p; ++id)
+			{
+				int first = (id + 0) * m_fireworks.size() / p;
+				int last  = (id + 1) * m_fireworks.size() / p;
+				int size  = last - first;
+				auto next = std::next(iter, size);
+
+				auto func =
+					[](auto first, auto last, float deltaTime)
+				{
+					while (first not_eq last)
+					{
+						first->tick(deltaTime);
+						std::advance(first, 1);
+					}
+				};
+				threads.emplace_back(func, iter, next, deltaTime);
+				iter = next;
+			}
+			for (auto& each : threads)
+			{
+				each.join();
+			}
+#else
 			for (auto& each : m_fireworks)
 			{
 				each.tick(deltaTime);
 			}
+#endif
 		}
 
 		void render()
