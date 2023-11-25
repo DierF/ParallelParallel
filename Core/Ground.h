@@ -12,8 +12,7 @@ namespace PParallel
 	class Ground
 	{
     public:
-        Ground(glm::vec3 position = glm::vec3(0.0f),
-            glm::vec3 color = glm::vec3(0.5f))
+        Ground()
         {
             m_vertexArray.bind();
             m_vertexBuffer.bind();
@@ -21,18 +20,14 @@ namespace PParallel
 
             float vertices[] =
             {
-                   0.5f, 0.5f,    0.5f, 1.0f,  // Bottom left
-                -100.0f, 0.0f,  100.0f,
-                   1.0f,
-                   0.5f, 0.5f,    0.5f, 1.0f,  // Bottom right
-                 100.0f, 0.0f,  100.0f,
-                   1.0f,
-                   0.5f, 0.5f,    0.5f, 1.0f,  // Top right
-                 100.0f, 0.0f, -100.0f,
-                   1.0f,
-                   0.5f, 0.5f,    0.5f, 1.0f,  // Top left
-                -100.0f, 0.0f, -100.0f,
-                   1.0f,
+                // Bottom left
+                0.1f, 0.1f, 0.1f, 1.0f, -100.0f, 0.0f,  100.0f, 1.0f,
+                // Bottom right
+                0.1f, 0.1f, 0.1f, 1.0f,  100.0f, 0.0f,  100.0f, 1.0f,
+                // Top right
+                0.1f, 0.1f, 0.1f, 1.0f,  100.0f, 0.0f, -100.0f, 1.0f,
+                // Top left
+                0.1f, 0.1f, 0.1f, 1.0f, -100.0f, 0.0f, -100.0f, 1.0f,
             };
             m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 

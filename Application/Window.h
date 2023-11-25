@@ -71,6 +71,26 @@ namespace PParallel
 			return false;
 		}
 
+		bool isJKeyPressed()
+		{
+			if (m_jKeyPressed)
+			{
+				m_jKeyPressed = false;
+				return true;
+			}
+			return false;
+		}
+
+		bool isKKeyPressed()
+		{
+			if (m_kKeyPressed)
+			{
+				m_kKeyPressed = false;
+				return true;
+			}
+			return false;
+		}
+
 		bool shouldClose()
 		{
 			return glfwWindowShouldClose(m_window);
@@ -94,23 +114,23 @@ namespace PParallel
 				{
 					s_instance->m_escapeKeyPressed = true;
 				}
-				else if (key == GLFW_KEY_L)
+				else if (key == GLFW_KEY_J)
 				{
-					s_instance->m_eKeyPressed = true;
+					s_instance->m_jKeyPressed = true;
 				}
-				else if (key == GLFW_KEY_BACKSPACE)
+				else if (key == GLFW_KEY_K)
 				{
-					s_instance->m_backSpaceKeyPressed = true;
+					s_instance->m_kKeyPressed = true;
 				}
 			}
 		}
 
 	private:
-		GLFWwindow* m_window              = nullptr;
-		bool        m_spaceKeyPressed     = false;
-		bool        m_escapeKeyPressed    = false;
-		bool        m_eKeyPressed         = false;
-		bool        m_backSpaceKeyPressed = false;
+		GLFWwindow* m_window           = nullptr;
+		bool        m_spaceKeyPressed  = false;
+		bool        m_escapeKeyPressed = false;
+		bool        m_kKeyPressed      = false;
+		bool        m_jKeyPressed      = false;
 
 	public:
 		static Window& get()
