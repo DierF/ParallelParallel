@@ -137,11 +137,11 @@ namespace PParallel
 		}
 
 	private:
-		CameraController          m_cameraController;
-		Renderer                  m_renderer;
-		Random                    m_random;
-		Ground                    m_ground;
-		std::list<MissileGroup>   m_fireworks;
-		bool                      m_paused;
+		CameraController        m_cameraController;
+		Renderer                m_renderer;
+		Random                  m_random;
+		Ground                  m_ground;
+		std::list<MissileGroup> m_fireworks;
+		bool                    m_paused;
 	};
 }

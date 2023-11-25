@@ -35,6 +35,11 @@ namespace PParallel
             updateCameraOrientation();
         }
 
+        void resetAspectRatio(float aspectRatio)
+        {
+            m_aspectRatio = aspectRatio;
+        }
+
         void render(Shader& shader)
         {
             shader.updateUniformMat4(shader.getUniformLocation("u_viewProjection"), getViewProjectionMatrix());

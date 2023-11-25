@@ -57,20 +57,21 @@ namespace PParallel
 
 		void tick(float deltaTime)
 		{
-			if (not m_exploded and MissileController::isGone(m_missiles.front()))
-			{
-				explode();
-				return;
-			}
-
 			glm::vec4 color = m_missiles[0].p0.color;
 			glm::vec3 diff = glm::normalize(glm::vec3(color.r, color.g, color.b)) * deltaTime * 0.0006f;
 			color.r -= diff.r;
 			color.g -= diff.g;
 			color.b -= diff.b;
-			if (m_exploded and MissileController::isGone(m_missiles.front()))
+			if (color.r < 0.0f or color.g < 0.0f or color.b < 0.0f)
 			{
-				reset();
+				if (m_exploded)
+				{
+					reset();
+				}
+				else
+				{
+					explode();
+				}
 				return;
 			}
 			for (std::size_t i = 0ULL; i < m_missiles.size(); ++i)

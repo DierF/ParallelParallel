@@ -61,6 +61,12 @@ namespace PParallel
             }
 
             m_camera.update(deltaPosition, deltaYaw, deltaPitch);
+            updateViewport(Window::get().getWidth(), Window::get().getHeight());
+        }
+
+        void updateViewport(int width, int height)
+        {
+            m_camera.resetAspectRatio(static_cast<float>(width) / static_cast<float>(height));
         }
 
         void render(Shader& shader)

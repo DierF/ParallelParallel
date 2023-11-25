@@ -25,12 +25,13 @@ namespace PParallel
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 
-			m_window = glfwCreateWindow(s_width, s_height, "ParallelParallel", nullptr, nullptr);
+			m_window = glfwCreateWindow(m_width, m_height, "ParallelParallel", nullptr, nullptr);
 			assert(m_window);
 
 			glfwMakeContextCurrent(m_window);
 
 			glfwSetKeyCallback(m_window, keyCallback);
+			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
 
 			glfwSwapInterval(0);
 
@@ -101,6 +102,16 @@ namespace PParallel
 			return m_window;
 		}
 
+		int getWidth() const
+		{
+			return m_width;
+		}
+
+		int getHeight() const
+		{
+			return m_height;
+		}
+
 	private:
 		static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
@@ -125,12 +136,21 @@ namespace PParallel
 			}
 		}
 
+		static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+		{
+			glViewport(0, 0, width, height);
+			s_instance->m_width  = width;
+			s_instance->m_height = height;
+		}
+
 	private:
 		GLFWwindow* m_window           = nullptr;
 		bool        m_spaceKeyPressed  = false;
 		bool        m_escapeKeyPressed = false;
 		bool        m_kKeyPressed      = false;
 		bool        m_jKeyPressed      = false;
+		int         m_width            = 1600;
+		int         m_height           = 900;
 
 	public:
 		static Window& get()
@@ -139,8 +159,6 @@ namespace PParallel
 		}
 
 	private:
-		static int const s_width  = 1600;
-		static int const s_height = 900;
-		static Window*   s_instance;
+		static Window* s_instance;
 	};
 }

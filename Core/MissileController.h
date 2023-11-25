@@ -50,10 +50,5 @@ namespace PParallel
 			missile.p3.position += missileStat.velocity * deltaTime * 0.97f;
 			missile.p4.position += missileStat.velocity * deltaTime * 0.96f;
 		}
-
-		static bool isGone(Missile& missile)
-		{
-			return missile.p0.color.r < 0.0f or missile.p0.color.g < 0.0f or missile.p0.color.b < 0.0f;
-		}
 	};
 }
