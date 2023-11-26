@@ -27,7 +27,9 @@ namespace PParallel
         void update(glm::vec3 const& deltaPosition, float deltaYaw, float deltaPitch)
         {
             m_position += deltaPosition;
-            m_position.y = std::max(m_position.y, 1.0f);
+            m_position.x = glm::clamp(m_position.x, -100.0f, 100.0f);
+            m_position.y = glm::clamp(m_position.y,    1.0f, 100.0f);
+            m_position.z = glm::clamp(m_position.z, -100.0f, 100.0f);
             m_yaw      += deltaYaw;
             m_pitch    += deltaPitch;
             m_pitch = glm::clamp(m_pitch, -90.0f, 90.0f);
@@ -61,17 +63,32 @@ namespace PParallel
             return getProjectionMatrix() * getViewMatrix();
         }
 
-        glm::vec3 getFront()
+        glm::vec3 const& getPosition() const
+        {
+            return m_position;
+        }
+
+        float getYaw() const
+        {
+            return m_yaw;
+        }
+
+        float getPitch() const
+        {
+            return m_pitch;
+        }
+
+        glm::vec3 const& getFront() const
         {
             return m_front;
         }
 
-        glm::vec3 getRight()
+        glm::vec3 const& getRight() const
         {
             return m_right;
         }
 
-        glm::vec3 getUp()
+        glm::vec3 const& getUp() const
         {
             return m_up;
         }
@@ -89,13 +106,13 @@ namespace PParallel
         }
 
     private:
-        glm::vec3 m_position    = glm::vec3(0.0f, 1.0f, 1.0f);
+        glm::vec3 m_position    = glm::vec3(0.0f, 2.0f, 1.0f);
         glm::quat m_orientation = glm::quat(0.0f, 0.0f, -1.0f, 0.0f);
         glm::vec3 m_front;
         glm::vec3 m_right;
         glm::vec3 m_up          = glm::vec3(0.0f, 1.0f, 0.0f);
-        float m_yaw             = 0.0f;// horizontal
-        float m_pitch           = 0.0f;// vertical
+        float m_yaw             = 0.0f;// horizontal (in degree)
+        float m_pitch           = 0.0f;// vertical (in degree)
         float m_fov             = 45.0f;
         float m_aspectRatio     = 16.0f / 9.0f;
         float m_nearPlane       = 0.1f;

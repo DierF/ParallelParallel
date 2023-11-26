@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "Application/Window.h"
+#include "Application/FileReader.h"
 #include "Core/CameraController.h"
 #include "Core/MissileGroup.h"
 #include "Core/MissileController.h"
@@ -20,9 +21,12 @@ namespace PParallel
 	{
 	public:
 		Scene()
-			: m_paused(true)
+			: m_paused(true), m_p(std::thread::hardware_concurrency())
 		{
-			for (int i = 0; i < 1200; ++i)
+			std::string s = FileReader::readFile("../CustomizedInitialFireworkNumber.txt");
+			int initialFireworkNum = std::stoi(s);
+
+			for (int i = 0; i < initialFireworkNum; ++i)
 			{
 				addFirework(m_random.genInt(100, 1000),
 					m_random.genColor(),
@@ -90,14 +94,20 @@ namespace PParallel
 
 		void tickObjects(float deltaTime)
 		{
-#if 1
-			int p = std::thread::hardware_concurrency();
+			if (m_fireworks.size() < m_p * 50)
+			{
+				for (auto& each : m_fireworks)
+				{
+					each.tick(deltaTime);
+				}
+				return;
+			}
 			std::vector<std::thread> threads;
 			auto iter = m_fireworks.begin();
-			for (int id = 0; id < p; ++id)
+			for (int id = 0; id < m_p; ++id)
 			{
-				int first = (id + 0) * m_fireworks.size() / p;
-				int last  = (id + 1) * m_fireworks.size() / p;
+				int first = (id + 0) * m_fireworks.size() / m_p;
+				int last  = (id + 1) * m_fireworks.size() / m_p;
 				int size  = last - first;
 				auto next = std::next(iter, size);
 
@@ -117,12 +127,6 @@ namespace PParallel
 			{
 				each.join();
 			}
-#else
-			for (auto& each : m_fireworks)
-			{
-				each.tick(deltaTime);
-			}
-#endif
 		}
 
 		void render()
@@ -143,5 +147,8 @@ namespace PParallel
 		Ground                  m_ground;
 		std::list<MissileGroup> m_fireworks;
 		bool                    m_paused;
+
+	private:
+		unsigned m_p;
 	};
 }

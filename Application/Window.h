@@ -92,6 +92,16 @@ namespace PParallel
 			return false;
 		}
 
+		bool isOKeyPressed()
+		{
+			if (m_oKeyPressed)
+			{
+				m_oKeyPressed = false;
+				return true;
+			}
+			return false;
+		}
+
 		bool shouldClose()
 		{
 			return glfwWindowShouldClose(m_window);
@@ -133,6 +143,10 @@ namespace PParallel
 				{
 					s_instance->m_kKeyPressed = true;
 				}
+				else if (key == GLFW_KEY_O)
+				{
+					s_instance->m_oKeyPressed = true;
+				}
 			}
 		}
 
@@ -149,6 +163,7 @@ namespace PParallel
 		bool        m_escapeKeyPressed = false;
 		bool        m_kKeyPressed      = false;
 		bool        m_jKeyPressed      = false;
+		bool        m_oKeyPressed      = false;
 		int         m_width            = 1600;
 		int         m_height           = 900;
 
