@@ -94,7 +94,7 @@ namespace PParallel
 
 		void tickObjects(float deltaTime)
 		{
-			if (m_fireworks.size() < m_p * 50)
+			if (m_fireworks.size() < m_p * 20)
 			{
 				for (auto& each : m_fireworks)
 				{
@@ -132,12 +132,12 @@ namespace PParallel
 		void render()
 		{
 			m_renderer.clearBuffer();
-			m_renderer.renderCamera(m_cameraController);
+			m_cameraController.render(m_renderer.getShader());
 			for (auto& each : m_fireworks)
 			{
-				m_renderer.renderMissiles(each);
+				each.render();
 			}
-			m_renderer.renderGround(m_ground);
+			m_ground.render();
 		}
 
 	private:
