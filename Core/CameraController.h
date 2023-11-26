@@ -28,10 +28,18 @@ namespace PParallel
             if (Window::get().isOKeyPressed())
             {
                 m_surrounding = not m_surrounding;
+                m_rotating = false;
             }
             if (m_surrounding)
             {
                 m_surroundAngle += deltaTime * std::numbers::pi_v<float> * 0.00003f;
+                if (   Input::IsKeyPressed(PP_KEY_W)
+                    or Input::IsKeyPressed(PP_KEY_A)
+                    or Input::IsKeyPressed(PP_KEY_S)
+                    or Input::IsKeyPressed(PP_KEY_D))
+                {
+                    m_surrounding = false;
+                }
             }
             glm::vec3 deltaPosition = getDeltaPosition(deltaTime);
             auto [deltaYaw, deltaPitch] = getDeltaYawPitch(deltaTime);
@@ -41,6 +49,10 @@ namespace PParallel
 
         glm::vec3 getDeltaPosition(float deltaTime)
         {
+            if (Input::IsKeyPressed(PP_KEY_LEFT_SHIFT))
+            {
+                deltaTime *= 4.0f;
+            }
             if (m_surrounding)
             {
                 glm::vec3 newPosition(95.0f * std::cos(m_surroundAngle), 45.0f, 95.0f * std::sin(m_surroundAngle));

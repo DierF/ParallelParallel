@@ -36,7 +36,7 @@ namespace PParallel
 
 		glm::vec4 const& genColor()
 		{
-			return brightColors[genInt(0, brightColors.size())];
+			return brightColors[genInt(0, static_cast<int>(brightColors.size()))];
 		}
 
 	private:

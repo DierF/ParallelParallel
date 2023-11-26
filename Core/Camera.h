@@ -32,7 +32,7 @@ namespace PParallel
             m_position.z = glm::clamp(m_position.z, -100.0f, 100.0f);
             m_yaw      += deltaYaw;
             m_pitch    += deltaPitch;
-            m_pitch = glm::clamp(m_pitch, -90.0f, 90.0f);
+            m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
 
             updateCameraOrientation();
         }

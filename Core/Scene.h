@@ -21,7 +21,7 @@ namespace PParallel
 	{
 	public:
 		Scene()
-			: m_paused(true), m_p(std::thread::hardware_concurrency())
+			: m_paused(false), m_p(std::thread::hardware_concurrency())
 		{
 			std::string s = FileReader::readFile("../CustomizedInitialFireworkNumber.txt");
 			int initialFireworkNum = std::stoi(s);
@@ -94,7 +94,7 @@ namespace PParallel
 
 		void tickObjects(float deltaTime)
 		{
-			if (m_fireworks.size() < m_p * 20)
+			if (m_fireworks.size() < m_p * 20ULL)
 			{
 				for (auto& each : m_fireworks)
 				{
@@ -104,11 +104,11 @@ namespace PParallel
 			}
 			std::vector<std::thread> threads;
 			auto iter = m_fireworks.begin();
-			for (int id = 0; id < m_p; ++id)
+			for (unsigned id = 0; id < m_p; ++id)
 			{
-				int first = (id + 0) * m_fireworks.size() / m_p;
-				int last  = (id + 1) * m_fireworks.size() / m_p;
-				int size  = last - first;
+				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_p;
+				std::size_t last  = (id + 1ULL) * m_fireworks.size() / m_p;
+				std::size_t size  = last - first;
 				auto next = std::next(iter, size);
 
 				auto func =
