@@ -4,6 +4,8 @@ Final Project for CSCI 476
 
 A simulation of fireworks accelerated by parallel programming.
 
+![Demo](https://github.com/DierF/ParallelParallel/blob/main/demo.gif)
+
 --------------------------------------------------------------------------------
 
 Download:
