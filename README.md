@@ -10,7 +10,7 @@ A simulation of fireworks accelerated by parallel programming.
 
 Download:
 
-run "git clone https://github.com/DierF/ParallelParallel.git"
+run ```git clone https://github.com/DierF/ParallelParallel.git```
 
 --------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ cmake required!
 
 Windows: (Visual Studio 2022 Recommended)
 
-run "./build_windows.bat"
+run ```./build_windows.bat```
 
 .sln file will be generated in folder "build"
 
@@ -28,7 +28,7 @@ run "./build_windows.bat"
 
 Linux:
 
-run "bash build_linux.sh"
+run ```bash build_linux.sh```
 
 executable "PParallel" will be generated in folder "build"
 
