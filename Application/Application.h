@@ -20,12 +20,22 @@ namespace PParallel
 
 		void run()
 		{
+			int total = 0;
+			int cnt   = 0;
 			m_timer.reset();
 			while (not m_window.shouldClose())
 			{
 				float deltaTime = m_timer.elapsedMilliseconds();
 				m_timer.reset();
-				std::cout << std::format("FPS: {}\n", static_cast<int>(1000.0f / deltaTime));
+				int curr = static_cast<int>(1000.0f / deltaTime);
+				if (cnt > 100)
+				{
+					total = 0;
+					cnt = 0;
+				}
+				total += curr;
+				++cnt;
+				std::cout << std::format("FPS: {:-4d}  AVERAGE FPS: {}\n", curr, total / cnt);
 				m_scene.update(deltaTime);
 				m_window.update();
 			}

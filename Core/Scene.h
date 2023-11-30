@@ -3,6 +3,9 @@
 #include <list>
 #include <thread>
 #include <iterator>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
 
 #include <glm/glm.hpp>
 
@@ -28,7 +31,7 @@ namespace PParallel
 
 			for (int i = 0; i < initialFireworkNum; ++i)
 			{
-				addFirework(m_random.genInt(100, 1000),
+				addFirework(m_random.genInt(100, 500),
 					m_random.genColor(),
 					static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
 					m_random.genVec3(),
@@ -60,11 +63,22 @@ namespace PParallel
 		{
 			checkKeyEvent();
 			tickCamera(deltaTime);
-			if (not m_paused)
+			if (m_paused)
 			{
-				tickObjects(deltaTime);
+				render();
 			}
-			render();
+			else
+			{
+				//tickSerial(deltaTime);
+				//render();
+
+				//tickObjects(deltaTime);
+				//render();
+
+				tickAndRender(deltaTime);
+
+				//tickAndSyncRender(deltaTime);
+			}
 		}
 
 		void checkKeyEvent()
@@ -92,14 +106,19 @@ namespace PParallel
 			m_cameraController.update(deltaTime);
 		}
 
+		void tickSerial(float deltaTime)
+		{
+			for (auto& each : m_fireworks)
+			{
+				each.tick(deltaTime);
+			}
+		}
+
 		void tickObjects(float deltaTime)
 		{
 			if (m_fireworks.size() < m_p * 20ULL)
 			{
-				for (auto& each : m_fireworks)
-				{
-					each.tick(deltaTime);
-				}
+				tickSerial(deltaTime);
 				return;
 			}
 			std::vector<std::thread> threads;
@@ -133,11 +152,100 @@ namespace PParallel
 		{
 			m_renderer.clearBuffer();
 			m_cameraController.render(m_renderer.getShader());
+			m_ground.render();
 			for (auto& each : m_fireworks)
 			{
 				each.render();
 			}
+		}
+
+		void tickAndRender(float deltaTime)
+		{
+			m_renderer.clearBuffer();
+			m_cameraController.render(m_renderer.getShader());
 			m_ground.render();
+			for (auto& each : m_fireworks)
+			{
+				each.tick(deltaTime);
+				each.render();
+			}
+		}
+
+		void tickAndSyncRender(float deltaTime)
+		{
+			m_renderer.clearBuffer();
+			m_cameraController.render(m_renderer.getShader());
+			m_ground.render();
+			if (m_fireworks.size() < m_p * 20ULL)
+			{
+				for (auto& each : m_fireworks)
+				{
+					each.tick(deltaTime);
+					each.render();
+				}
+				return;
+			}
+			std::vector<std::jthread> threads;
+			auto iter = m_fireworks.begin();
+			for (unsigned id = 0; id < m_p; ++id)
+			{
+				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_p;
+				std::size_t last = (id + 1ULL) * m_fireworks.size() / m_p;
+				std::size_t size = last - first;
+				auto next = std::next(iter, size);
+
+				//auto func =
+				//	[](std::mutex& mutex,
+				//	   std::list<MissileGroup>::iterator first,
+				//	   std::list<MissileGroup>::iterator last,
+				//	   float deltaTime)
+				//{
+				//	while (first not_eq last)
+				//	{
+				//		first->tick(deltaTime);
+				//		{
+				//			std::lock_guard<std::mutex> lock(mutex);
+				//			first->render();
+				//		}
+				//		std::advance(first, 1);
+				//	}
+				//};
+				auto func =
+					[](std::mutex& mutex,
+				       std::condition_variable& cv,
+				       std::queue<std::list<MissileGroup>::iterator>& queue,
+				       std::list<MissileGroup>::iterator first,
+				       std::list<MissileGroup>::iterator last,
+				       float deltaTime)
+				{
+					while (first not_eq last)
+					{
+						first->tick(deltaTime);
+						{
+							std::lock_guard<std::mutex> lock(mutex);
+							queue.push(first);
+						}
+						cv.notify_one();
+						std::advance(first, 1);
+					}
+				};
+				threads.emplace_back(func, std::ref(m_mutex), std::ref(m_cv), std::ref(m_queue),
+					                 iter, next, deltaTime);
+				iter = next;
+			}
+			std::size_t cnt = 0ULL;
+			while (cnt < m_fireworks.size())
+			{
+				std::unique_lock<std::mutex> lock(m_mutex);
+				m_cv.wait(lock, [&] { return not m_queue.empty(); });
+				while (not m_queue.empty())
+				{
+					auto iter = m_queue.front();
+					m_queue.pop();
+					iter->render();
+					++cnt;
+				}
+			}
 		}
 
 	private:
@@ -149,6 +257,9 @@ namespace PParallel
 		bool                    m_paused;
 
 	private:
-		unsigned m_p;
+		unsigned                m_p;
+		std::mutex              m_mutex;
+		std::condition_variable m_cv;
+		std::queue<std::list<MissileGroup>::iterator> m_queue;
 	};
 }

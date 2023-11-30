@@ -16,7 +16,6 @@ namespace PParallel
 			missile.p1.position = position;
 			missile.p2.position = position;
 			missile.p3.position = position;
-			missile.p4.position = position;
 		}
 
 		static void resetColor(Missile& missile, glm::vec4 const& color)
@@ -25,7 +24,6 @@ namespace PParallel
 			missile.p1.color = color;
 			missile.p2.color = color;
 			missile.p3.color = color;
-			missile.p4.color = color;
 		}
 
 		static void resetSize(Missile& missile, float size0 = 3.0f)
@@ -34,7 +32,6 @@ namespace PParallel
 			missile.p1.size = missile.p0.size * 0.8f;
 			missile.p2.size = missile.p1.size * 0.7f;
 			missile.p3.size = missile.p2.size * 0.6f;
-			missile.p4.size = missile.p3.size * 0.5f;
 		}
 
 		static void move(Missile& missile, MissileStat& missileStat, float deltaTime)
@@ -48,7 +45,6 @@ namespace PParallel
 			missile.p1.position += missileStat.velocity * deltaTime * 0.99f;
 			missile.p2.position += missileStat.velocity * deltaTime * 0.98f;
 			missile.p3.position += missileStat.velocity * deltaTime * 0.97f;
-			missile.p4.position += missileStat.velocity * deltaTime * 0.96f;
 		}
 	};
 }

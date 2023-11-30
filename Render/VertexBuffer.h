@@ -27,6 +27,11 @@ namespace PParallel
 		{
 			glBufferData(GL_ARRAY_BUFFER, size, data, usage);
 		}
+		
+		void bufferSubData(GLintptr offset, GLsizeiptr size, void const* newData)
+		{
+			glBufferSubData(GL_ARRAY_BUFFER, offset, size, newData);
+		}
 
 		void unbind()
 		{

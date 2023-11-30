@@ -12,7 +12,6 @@ namespace PParallel
         Particle p1;
         Particle p2;
         Particle p3;
-        Particle p4;
     };
 
     struct MissileStat

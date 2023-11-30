@@ -33,7 +33,7 @@ namespace PParallel
 			glfwSetKeyCallback(m_window, keyCallback);
 			glfwSetFramebufferSizeCallback(m_window, framebufferSizeCallback);
 
-			glfwSwapInterval(1);
+			glfwSwapInterval(0);
 
 			if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 			{
