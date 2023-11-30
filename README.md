@@ -51,6 +51,8 @@ O - Start/Stop automatically surrounding mode
 
 Esc - Quit program
 
+CustomizedInitialFireworkNumber.txt - setup the initial number of fireworks
+
 --------------------------------------------------------------------------------
 
 3rdParty libraries included:

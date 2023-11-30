@@ -72,10 +72,10 @@ namespace PParallel
 				//tickSerial(deltaTime);
 				//render();
 
-				//tickObjects(deltaTime);
-				//render();
+				tickObjects(deltaTime);
+				render();
 
-				tickAndRender(deltaTime);
+				//tickAndRender(deltaTime);
 
 				//tickAndSyncRender(deltaTime);
 			}
