@@ -29,6 +29,36 @@ namespace PParallel
 			std::string s = FileReader::readFile("../CustomizedInitialFireworkNumber.txt");
 			int initialFireworkNum = std::stoi(s);
 
+			addFirework(5000,
+				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+				0.03f,
+				glm::vec3(0.0f),
+				0.08f);
+
+			for (float i = -100.0f; i < 100.0f; i += 10.0f)
+			{
+				addFirework(m_random.genInt(100, 500),
+					m_random.genColor(),
+					(i + 300.0f) / 10000.0f,
+					glm::vec3(i, 0.0f, -100.0f),
+					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+				addFirework(m_random.genInt(100, 500),
+					m_random.genColor(),
+					(i + 300.0f) / 10000.0f,
+					glm::vec3(-i, 0.0f, 100.0f),
+					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+				addFirework(m_random.genInt(100, 500),
+					m_random.genColor(),
+					(i + 300.0f) / 10000.0f,
+					glm::vec3(100.0f, 0.0f, i),
+					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+				addFirework(m_random.genInt(100, 500),
+					m_random.genColor(),
+					(i + 300.0f) / 10000.0f,
+					glm::vec3(-100.0f, 0.0f, -i),
+					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+			}
+
 			for (int i = 0; i < initialFireworkNum; ++i)
 			{
 				addFirework(m_random.genInt(100, 500),
