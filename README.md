@@ -24,6 +24,8 @@ run ```./build_windows.bat```
 
 .sln file will be generated in folder "build"
 
+In Visual Studio, set PParallel as the startup project
+
 <br>
 
 Linux:
