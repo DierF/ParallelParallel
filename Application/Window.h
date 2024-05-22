@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <format>
 
 #define GLAD_GL_IMPLEMENTATION // Necessary for headeronly version.
 #include <glad/gl.h>
@@ -53,12 +54,13 @@ namespace PParallel
 			glfwTerminate();
 		}
 
-		void update()
+		void update(long fps)
 		{
 			if (m_escapeKeyPressed)
 			{
 				glfwSetWindowShouldClose(m_window, GLFW_TRUE);
 			}
+			glfwSetWindowTitle(m_window, std::format("FPS: {}", fps).c_str());
 			glfwSwapBuffers(m_window);
 			glfwPollEvents();
 		}
