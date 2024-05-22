@@ -3,7 +3,8 @@
 #include <cassert>
 #include <stdexcept>
 
-#include <glad/glad.h>
+#define GLAD_GL_IMPLEMENTATION // Necessary for headeronly version.
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 namespace PParallel
@@ -35,7 +36,7 @@ namespace PParallel
 
 			glfwSwapInterval(1);
 
-			if (not gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			if (not gladLoadGL(glfwGetProcAddress))
 			{
 				throw std::runtime_error("failed to initialize GLAD");
 			}

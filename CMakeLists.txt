@@ -1,29 +1,44 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.4)
 
-if (NOT WIN32)
-    set(CMAKE_C_COMPILER gcc)
-    set(CMAKE_CXX_COMPILER g++)
-endif()
+project(PParallel LANGUAGES CXX)
 
-project(PParallel)
-
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR})
-
+# Enforce out-of-source builds
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(
-    FATAL_ERROR
-      "In-source builds not allowed.(build in another folder)"
-  )
+  message(FATAL_ERROR "In-source builds not allowed. Please build in another folder.")
 endif()
 
-file(GLOB_RECURSE CoreFiles "Core/*")
-file(GLOB_RECURSE RenderFiles "Render/*")
-file(GLOB_RECURSE ApplicationFiles "Application/*")
-file(GLOB gladc "Library/glad/src/glad.c")
+# Include FetchContent module
+include(FetchContent)
+
+# Fetch GLFW
+FetchContent_Declare(
+  glfw
+  GIT_REPOSITORY https://github.com/glfw/glfw.git
+  GIT_TAG 3.4
+)
+FetchContent_MakeAvailable(glfw)
+
+# Fetch GLM
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG 0.9.9.8
+)
+FetchContent_MakeAvailable(glm)
+
+# Set binary directory
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
+
+# Organize source files into groups
+file(GLOB_RECURSE CoreFiles "${CMAKE_SOURCE_DIR}/Core/*.cpp" "${CMAKE_SOURCE_DIR}/Core/*.h")
+file(GLOB_RECURSE RenderFiles "${CMAKE_SOURCE_DIR}/Render/*.cpp" "${CMAKE_SOURCE_DIR}/Render/*.h")
+file(GLOB_RECURSE ApplicationFiles "${CMAKE_SOURCE_DIR}/Application/*.cpp" "${CMAKE_SOURCE_DIR}/Application/*.h")
+
+file(GLOB gladc "Glad/src/gl.c")
 
 source_group("Core" FILES ${CoreFiles})
 source_group("Render" FILES ${RenderFiles})
@@ -31,12 +46,21 @@ source_group("Application" FILES ${ApplicationFiles})
 
 include_directories(".")
 
-add_executable(PParallel main.cpp ${CoreFiles} ${RenderFiles} ${ApplicationFiles} ${gladc})
+# Create executable
+add_executable(PParallel ${CMAKE_SOURCE_DIR}/main.cpp ${CoreFiles} ${RenderFiles} ${ApplicationFiles} ${gladc})
 
-target_link_libraries(PParallel PUBLIC glfw glm)
+# Link dependencies
+target_link_libraries(PParallel PRIVATE glfw glm::glm)
 
-target_include_directories(PParallel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Library/glad/include)
+# Include directories
+target_include_directories(PParallel PRIVATE
+    ${glfw_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/Glad/include
+    ${glm_SOURCE_DIR}
+)
 
-add_subdirectory(Library)
+# Set preprocessor definitions
+target_compile_definitions(PParallel PRIVATE GLM_ENABLE_EXPERIMENTAL)
 
+# Set executable output path
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build)

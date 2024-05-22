@@ -3,7 +3,7 @@
 #include <list>
 #include <stdexcept>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include "Core/Particle.h"
 #include "Render/VertexArray.h"
