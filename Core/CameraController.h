@@ -127,7 +127,7 @@ namespace PParallel
         glm::vec2 m_lastPos = glm::vec2(0.0f);
         bool m_rotating = false;
         float m_surroundAngle = 0.0f; // in radian
-        bool m_surrounding = true;
+        bool m_surrounding = false;
 		Camera m_camera;
 	};
 }
