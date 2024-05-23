@@ -1,11 +1,7 @@
 #pragma once
 
-#include <list>
+#include <vector>
 #include <thread>
-#include <iterator>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
 
 #include <glm/glm.hpp>
 
@@ -24,16 +20,11 @@ namespace PParallel
 	{
 	public:
 		Scene()
-			: m_paused(false), m_p(std::thread::hardware_concurrency())
+			: m_paused(false), m_threadCount(std::thread::hardware_concurrency())
 		{
-			std::string s = FileReader::readFile("../CustomizedInitialFireworkNumber.txt");
-			int initialFireworkNum = std::stoi(s);
+			int initialFireworkNum = std::stoi(FileReader::readFile("../InitialFireworkCount.txt"));
 
-			addFirework(5000,
-				glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-				0.03f,
-				glm::vec3(0.0f),
-				0.08f);
+			addFirework(5000, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.03f, glm::vec3(0.0f), 0.08f);
 
 			for (float i = -100.0f; i < 100.0f; i += 10.0f)
 			{
@@ -93,22 +84,11 @@ namespace PParallel
 		{
 			checkKeyEvent();
 			tickCamera(deltaTime);
-			if (m_paused)
+			if (!m_paused)
 			{
-				render();
+				tick(deltaTime);
 			}
-			else
-			{
-				//tickSerial(deltaTime);
-				//render();
-
-				tickObjects(deltaTime);
-				render();
-
-				//tickAndRender(deltaTime);
-
-				//tickAndSyncRender(deltaTime);
-			}
+			render();
 		}
 
 		void checkKeyEvent()
@@ -136,41 +116,33 @@ namespace PParallel
 			m_cameraController.update(deltaTime);
 		}
 
-		void tickSerial(float deltaTime)
+		void tick(float deltaTime)
 		{
-			for (auto& each : m_fireworks)
+			// If not much work to do, then do it in serial.
+			if (m_fireworks.size() < m_threadCount * 100ULL)
 			{
-				each.tick(deltaTime);
-			}
-		}
-
-		void tickObjects(float deltaTime)
-		{
-			if (m_fireworks.size() < m_p * 20ULL)
-			{
-				tickSerial(deltaTime);
+				for (auto& firework : m_fireworks)
+				{
+					firework.tick(deltaTime);
+				}
 				return;
 			}
 			std::vector<std::thread> threads;
-			auto iter = m_fireworks.begin();
-			for (unsigned id = 0; id < m_p; ++id)
+			for (unsigned id = 0U; id < m_threadCount; ++id)
 			{
-				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_p;
-				std::size_t last  = (id + 1ULL) * m_fireworks.size() / m_p;
-				std::size_t size  = last - first;
-				auto next = std::next(iter, size);
+				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_threadCount;
+				std::size_t last  = (id + 1ULL) * m_fireworks.size() / m_threadCount;
 
 				auto func =
 					[](auto first, auto last, float deltaTime)
 				{
-					while (first not_eq last)
+					while (first != last)
 					{
 						first->tick(deltaTime);
-						std::advance(first, 1);
+						++first;
 					}
 				};
-				threads.emplace_back(func, iter, next, deltaTime);
-				iter = next;
+				threads.emplace_back(func, m_fireworks.begin() + first, m_fireworks.begin() + last, deltaTime);
 			}
 			for (auto& each : threads)
 			{
@@ -189,107 +161,15 @@ namespace PParallel
 			}
 		}
 
-		void tickAndRender(float deltaTime)
-		{
-			m_renderer.clearBuffer();
-			m_cameraController.render(m_renderer.getShader());
-			m_ground.render();
-			for (auto& each : m_fireworks)
-			{
-				each.tick(deltaTime);
-				each.render();
-			}
-		}
-
-		void tickAndSyncRender(float deltaTime)
-		{
-			m_renderer.clearBuffer();
-			m_cameraController.render(m_renderer.getShader());
-			m_ground.render();
-			if (m_fireworks.size() < m_p * 20ULL)
-			{
-				for (auto& each : m_fireworks)
-				{
-					each.tick(deltaTime);
-					each.render();
-				}
-				return;
-			}
-			std::vector<std::jthread> threads;
-			auto iter = m_fireworks.begin();
-			for (unsigned id = 0; id < m_p; ++id)
-			{
-				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_p;
-				std::size_t last = (id + 1ULL) * m_fireworks.size() / m_p;
-				std::size_t size = last - first;
-				auto next = std::next(iter, size);
-
-				//auto func =
-				//	[](std::mutex& mutex,
-				//	   std::list<MissileGroup>::iterator first,
-				//	   std::list<MissileGroup>::iterator last,
-				//	   float deltaTime)
-				//{
-				//	while (first not_eq last)
-				//	{
-				//		first->tick(deltaTime);
-				//		{
-				//			std::lock_guard<std::mutex> lock(mutex);
-				//			first->render();
-				//		}
-				//		std::advance(first, 1);
-				//	}
-				//};
-				auto func =
-					[](std::mutex& mutex,
-				       std::condition_variable& cv,
-				       std::queue<std::list<MissileGroup>::iterator>& queue,
-				       std::list<MissileGroup>::iterator first,
-				       std::list<MissileGroup>::iterator last,
-				       float deltaTime)
-				{
-					while (first not_eq last)
-					{
-						first->tick(deltaTime);
-						{
-							std::lock_guard<std::mutex> lock(mutex);
-							queue.push(first);
-						}
-						cv.notify_one();
-						std::advance(first, 1);
-					}
-				};
-				threads.emplace_back(func, std::ref(m_mutex), std::ref(m_cv), std::ref(m_queue),
-					                 iter, next, deltaTime);
-				iter = next;
-			}
-			std::size_t cnt = 0ULL;
-			while (cnt < m_fireworks.size())
-			{
-				std::unique_lock<std::mutex> lock(m_mutex);
-				m_cv.wait(lock, [&] { return not m_queue.empty(); });
-				while (not m_queue.empty())
-				{
-					auto iter = m_queue.front();
-					m_queue.pop();
-					iter->render();
-					++cnt;
-				}
-			}
-		}
+	private:
+		CameraController          m_cameraController;
+		Renderer                  m_renderer;
+		Random                    m_random;
+		Ground                    m_ground;
+		std::vector<MissileGroup> m_fireworks;
+		bool                      m_paused;
 
 	private:
-		CameraController        m_cameraController;
-		Renderer                m_renderer;
-		Random                  m_random;
-		Ground                  m_ground;
-		std::list<MissileGroup> m_fireworks;
-		bool                    m_paused;
-
-	private:
-		unsigned                m_p;
-		std::mutex              m_mutex;
-		std::condition_variable m_cv;
-		std::queue<std::list<MissileGroup>::iterator> m_queue;
+		unsigned m_threadCount;
 	};
 }
