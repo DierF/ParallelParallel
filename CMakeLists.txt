@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(PParallel LANGUAGES CXX)
+project(PParallel LANGUAGES CXX C)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -63,4 +63,4 @@ target_include_directories(PParallel PRIVATE
 target_compile_definitions(PParallel PRIVATE GLM_ENABLE_EXPERIMENTAL)
 
 # Set executable output path
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/build)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
