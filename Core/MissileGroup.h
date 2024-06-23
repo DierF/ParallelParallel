@@ -42,7 +42,7 @@ namespace PParallel
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(4 * sizeof(float)));
 			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(7 * sizeof(float)));
+			glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(10 * sizeof(float)));
 
 			m_vertexBuffer.unbind();
 			m_vertexArray.unbind();

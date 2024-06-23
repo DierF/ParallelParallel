@@ -34,9 +34,9 @@ FetchContent_MakeAvailable(glm)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
 
 # Organize source files into groups
-file(GLOB_RECURSE CoreFiles "${CMAKE_SOURCE_DIR}/Core/*.cpp" "${CMAKE_SOURCE_DIR}/Core/*.h")
-file(GLOB_RECURSE RenderFiles "${CMAKE_SOURCE_DIR}/Render/*.cpp" "${CMAKE_SOURCE_DIR}/Render/*.h")
-file(GLOB_RECURSE ApplicationFiles "${CMAKE_SOURCE_DIR}/Application/*.cpp" "${CMAKE_SOURCE_DIR}/Application/*.h")
+file(GLOB_RECURSE CoreFiles "${CMAKE_SOURCE_DIR}/Core/*.cpp" "${CMAKE_SOURCE_DIR}/Core/*.*")
+file(GLOB_RECURSE RenderFiles "${CMAKE_SOURCE_DIR}/Render/*.cpp" "${CMAKE_SOURCE_DIR}/Render/*.*")
+file(GLOB_RECURSE ApplicationFiles "${CMAKE_SOURCE_DIR}/Application/*.cpp" "${CMAKE_SOURCE_DIR}/Application/*.*")
 
 file(GLOB gladc "Glad/src/gl.c")
 

@@ -60,6 +60,11 @@ namespace PParallel
 			return glGetUniformLocation(m_shader, name.c_str());
 		}
 
+		void updateUniformFloat(GLint location, float val)
+		{
+			glUniform1f(location, val);
+		}
+
 		void updateUniformVec3(GLint location, glm::vec3 const& vec)
 		{
 			glUniform3f(location, vec.x, vec.y, vec.z);

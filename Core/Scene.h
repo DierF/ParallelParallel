@@ -7,11 +7,12 @@
 
 #include "Application/Window.h"
 #include "Application/FileReader.h"
+
 #include "Core/CameraController.h"
-#include "Core/MissileGroup.h"
-#include "Core/MissileController.h"
+#include "Core/Firework.h"
 #include "Core/Random.h"
 #include "Core/Ground.h"
+
 #include "Render/Renderer.h"
 
 namespace PParallel
@@ -24,51 +25,57 @@ namespace PParallel
 		{
 			int initialFireworkNum = std::stoi(FileReader::readFile("../InitialFireworkCount.txt"));
 
-			addFirework(5000, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0.03f, glm::vec3(0.0f), 0.08f);
-
-			for (float i = -100.0f; i < 100.0f; i += 10.0f)
+			glm::vec3 velocity = glm::vec3(0.0f, 100.0f, 0.0f);
+			float lifetime = 50000.0f;
+			std::size_t tailLife = 5000.0f;
+			for (float i = -500.0f; i < 500.0f; i += 50.0f)
 			{
-				addFirework(m_random.genInt(100, 500),
-					m_random.genColor(),
-					(i + 300.0f) / 10000.0f,
-					glm::vec3(i, 0.0f, -100.0f),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-				addFirework(m_random.genInt(100, 500),
-					m_random.genColor(),
-					(i + 300.0f) / 10000.0f,
-					glm::vec3(-i, 0.0f, 100.0f),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-				addFirework(m_random.genInt(100, 500),
-					m_random.genColor(),
-					(i + 300.0f) / 10000.0f,
-					glm::vec3(100.0f, 0.0f, i),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-				addFirework(m_random.genInt(100, 500),
-					m_random.genColor(),
-					(i + 300.0f) / 10000.0f,
-					glm::vec3(-100.0f, 0.0f, -i),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+				addFirework(m_random.genColor(),
+					glm::vec3(i, 0.0f, -500.0f),
+					velocity,
+					lifetime,
+					m_random.genInt(50, 100),
+					tailLife);
+				addFirework(m_random.genColor(),
+					glm::vec3(i, 0.0f, 500.0f),
+					velocity,
+					lifetime,
+					m_random.genInt(50, 100),
+					tailLife);
+				addFirework(m_random.genColor(),
+					glm::vec3(-500.0f, 0.0f, i),
+					velocity,
+					lifetime,
+					m_random.genInt(50, 100),
+					tailLife);
+				addFirework(m_random.genColor(),
+					glm::vec3(500.0f, 0.0f, i),
+					velocity,
+					lifetime,
+					m_random.genInt(50, 100),
+					tailLife);
 			}
 
-			for (int i = 0; i < initialFireworkNum; ++i)
-			{
-				addFirework(m_random.genInt(100, 500),
-					m_random.genColor(),
-					static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
-					m_random.genVec3(),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-			}
+			//for (int i = 0; i < initialFireworkNum; ++i)
+			//{
+			//	addFirework(m_random.genInt(100, 500),
+			//		m_random.genColor(),
+			//		static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
+			//		m_random.genVec3(),
+			//		static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+			//}
 		}
 
 		~Scene() = default;
 
-		void addFirework(std::size_t const cnt,
-			             glm::vec4 const&  color,
-			             float const       launchSpeed,
-			             glm::vec3 const&  launchPosition,
-			             float const       explodeSpeed)
+		void addFirework(glm::vec4 const& color,
+						 glm::vec3 const& position,
+						 glm::vec3 const& velocity,
+						 float            lifetime,
+						 std::size_t      tailSize,
+						 std::size_t      tailLife)
 		{
-			m_fireworks.emplace_back(cnt, color, launchSpeed, launchPosition, explodeSpeed);
+			m_fireworks.emplace_back(color, position, velocity, lifetime, tailSize, tailLife);
 		}
 
 		void popFirework()
@@ -97,18 +104,18 @@ namespace PParallel
 			{
 				m_paused = not m_paused;
 			}
-			if (Window::get().isJKeyPressed())
-			{
-				addFirework(m_random.genInt(100, 1000),
-					m_random.genColor(),
-					static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
-					m_random.genVec3(),
-					static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-			}
-			if (Window::get().isKKeyPressed())
-			{
-				popFirework();
-			}
+			//if (Window::get().isJKeyPressed())
+			//{
+			//	addFirework(m_random.genInt(100, 1000),
+			//		m_random.genColor(),
+			//		static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
+			//		m_random.genVec3(),
+			//		static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
+			//}
+			//if (Window::get().isKKeyPressed())
+			//{
+			//	popFirework();
+			//}
 		}
 
 		void tickCamera(float deltaTime)
@@ -162,12 +169,16 @@ namespace PParallel
 		}
 
 	private:
-		CameraController          m_cameraController;
-		Renderer                  m_renderer;
-		Random                    m_random;
-		Ground                    m_ground;
-		std::vector<MissileGroup> m_fireworks;
-		bool                      m_paused;
+		Random m_random;
+
+		Renderer m_renderer;
+
+		CameraController m_cameraController;
+
+		Ground                m_ground;
+		std::vector<Firework> m_fireworks;
+
+		bool m_paused;
 
 	private:
 		unsigned m_threadCount;

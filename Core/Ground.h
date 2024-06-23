@@ -21,13 +21,29 @@ namespace PParallel
             float vertices[] =
             {
                 // Bottom left
-                0.1f, 0.1f, 0.1f, 1.0f, -100.0f, 0.0f,  100.0f, 1.0f,
+                0.1f, 0.1f, 0.1f, 1.0f,
+                -1000.0f, 0.0f, 1000.0f,
+                0.0f, 0.0f, 0.0f,
+                1.0f,
+                0.0f,
                 // Bottom right
-                0.1f, 0.1f, 0.1f, 1.0f,  100.0f, 0.0f,  100.0f, 1.0f,
+                0.1f, 0.1f, 0.1f, 1.0f,
+                1000.0f, 0.0f, 1000.0f,
+                0.0f, 0.0f, 0.0f,
+                1.0f,
+                0.0f,
                 // Top right
-                0.1f, 0.1f, 0.1f, 1.0f,  100.0f, 0.0f, -100.0f, 1.0f,
+                0.1f, 0.1f, 0.1f, 1.0f,
+                1000.0f, 0.0f, -1000.0f,
+                0.0f, 0.0f, 0.0f,
+                1.0f,
+                0.0f,
                 // Top left
-                0.1f, 0.1f, 0.1f, 1.0f, -100.0f, 0.0f, -100.0f, 1.0f,
+                0.1f, 0.1f, 0.1f, 1.0f,
+                -1000.0f, 0.0f, -1000.0f,
+                0.0f, 0.0f, 0.0f,
+                1.0f,
+                0.0f
             };
             m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -38,12 +54,18 @@ namespace PParallel
             };
             m_indexBuffer.bufferData(sizeof(indices), indices, GL_STATIC_DRAW);
 
+            // Based on how Particle is defined
+            // color: vec4
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)0);
+            // position: vec3
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(4 * sizeof(float)));
+            // velocity: vec3
+            // UNUSED by shader
+            // size: float
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(7 * sizeof(float)));
+            glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(10 * sizeof(float)));
 
             m_vertexBuffer.unbind();
             m_vertexArray.unbind();
