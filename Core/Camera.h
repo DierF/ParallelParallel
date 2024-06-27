@@ -27,9 +27,9 @@ namespace PParallel
         void update(glm::vec3 const& deltaPosition, float deltaYaw, float deltaPitch)
         {
             m_position += deltaPosition;
-            m_position.x = glm::clamp(m_position.x, -100.0f, 100.0f);
-            m_position.y = glm::clamp(m_position.y,    1.0f, 100.0f);
-            m_position.z = glm::clamp(m_position.z, -100.0f, 100.0f);
+            //m_position.x = glm::clamp(m_position.x, -100.0f, 100.0f);
+            //m_position.y = glm::clamp(m_position.y,    1.0f, 100.0f);
+            //m_position.z = glm::clamp(m_position.z, -100.0f, 100.0f);
             m_yaw      += deltaYaw;
             m_pitch    += deltaPitch;
             m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);

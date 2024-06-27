@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
 
 #include <glm/glm.hpp>
 
@@ -9,6 +8,7 @@
 #include "Render/VertexBuffer.h"
 
 #include "Core/Particle.h"
+#include "Core/Explosion.h"
 
 namespace PParallel
 {
@@ -20,9 +20,15 @@ namespace PParallel
 			glm::vec3 const&      velocity,
 			float                 lifetime,
 			std::size_t           tailSize,
-			std::size_t           tailLife)
-			: m_color(color), m_position(position), m_velocity(velocity), m_lifetime(lifetime),
-			m_tailSize(tailSize), m_tailLife(tailLife)
+			float                 tailLife,
+			ExplosionType         explosion_t)
+			: m_color(color),
+			m_position(position),
+			m_velocity(velocity),
+			m_lifetime(lifetime),
+			m_tailSize(tailSize),
+			m_tailLife(tailLife),
+			m_explosion_t(explosion_t)
 		{
 			m_vertexArray.bind();
 			m_vertexBuffer.bind();
@@ -51,7 +57,7 @@ namespace PParallel
 		void tick(float deltaTime)
 		{
 			// update lifetime
-			m_lifetime -= deltaTime;
+			m_age += deltaTime;
 
 			// update old particles
 			std::size_t idx = 0ULL;
@@ -79,7 +85,7 @@ namespace PParallel
 				++idx;
 			}
 
-			if (m_lifetime > 0.0f)
+			if (m_age < m_lifetime)
 			{
 				// update position
 				m_position += 0.001f * deltaTime * m_velocity;
@@ -94,7 +100,13 @@ namespace PParallel
 
 		bool alive()
 		{
-			return m_lifetime > 0.0f || !m_tail.empty();
+			return m_age < m_lifetime || !m_tail.empty();
+		}
+
+		auto explode()
+		{
+			return Exploder::explode(m_color, m_position, m_velocity,
+									 m_lifetime, m_tailSize, m_tailLife, m_explosion_t);
 		}
 
 		void render()
@@ -118,9 +130,12 @@ namespace PParallel
 		glm::vec3 m_position;
 		glm::vec3 m_velocity;
 		float     m_lifetime;
+		float     m_age = 0.0f;
 
-		std::size_t m_tailSize;
-		std::size_t m_tailLife;
+		std::size_t           m_tailSize;
+		float                 m_tailLife;
 		std::vector<Particle> m_tail;
+
+		ExplosionType m_explosion_t;
 	};
 }

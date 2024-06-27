@@ -49,9 +49,9 @@ namespace PParallel
 
         glm::vec3 getDeltaPosition(float deltaTime)
         {
-            if (Input::IsKeyPressed(PP_KEY_LEFT_SHIFT))
+            if (Input::IsKeyPressed(PP_KEY_LEFT_SHIFT) || Input::IsKeyPressed(PP_KEY_RIGHT_SHIFT))
             {
-                deltaTime *= 4.0f;
+                deltaTime *= 10.0f;
             }
             if (m_surrounding)
             {
