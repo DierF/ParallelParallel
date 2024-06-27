@@ -17,7 +17,7 @@ namespace PParallel
 	class Explosion
 	{
 	public:
-		using param_t = std::tuple<glm::vec4, glm::vec3, glm::vec3, float, std::size_t, std::size_t, ExplosionType>;
+		using param_t = std::tuple<glm::vec4, glm::vec3, glm::vec3, float, std::size_t, float, ExplosionType>;
 	};
 
 	class NoExplosion : public Explosion
@@ -62,7 +62,7 @@ namespace PParallel
 				float x = std::cos(theta) * radiusAtY;
 				float z = std::sin(theta) * radiusAtY;
 
-				float explodeSpeed = glm::length(velocity);
+				float explodeSpeed = glm::length(velocity) * 0.5f;
 				res.emplace_back(color, position, glm::normalize(glm::vec3(x, y, z)) * explodeSpeed,
 					lifetime, tailSize, tailLife, ExplosionType::NoExplosion);
 			}

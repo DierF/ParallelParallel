@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 
@@ -61,16 +62,12 @@ namespace PParallel
 			m_age += deltaTime;
 
 			// update old particles
-			std::size_t idx = 0ULL;
-			while (idx < m_tail.size())
+			for (auto& p : m_tail)
 			{
 				// update lifetime
-				Particle& p = m_tail[idx];
 				p.lifetime -= deltaTime;
 				if (p.lifetime <= 0.0f)
 				{
-					// expensive operation
-					m_tail.erase(std::next(m_tail.begin(), idx));
 					continue;
 				}
 
@@ -80,9 +77,10 @@ namespace PParallel
 				// update velocity
 				// apply air resistance
 				p.velocity -= 0.001f * deltaTime * p.velocity * 0.5f;
-
-				++idx;
 			}
+			// erase dead
+			auto func = [](auto const& p) { return p.lifetime > 0.0f; };
+			m_tail.erase(std::partition(m_tail.begin(), m_tail.end(), func), m_tail.end());
 
 			if (m_age < m_lifetime)
 			{
