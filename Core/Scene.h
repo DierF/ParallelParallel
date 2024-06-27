@@ -28,8 +28,8 @@ namespace PParallel
 			int initialFireworkNum = std::stoi(FileReader::readFile("../InitialFireworkCount.txt"));
 
 			glm::vec3 velocity = glm::vec3(0.0f, 100.0f, 0.0f);
-			float lifetime = 4000.0f;
-			float tailLife = 2000.0f;
+			float lifetime = 3000.0f;
+			float tailLife = 3000.0f;
 			ExplosionType explosion_t = ExplosionType::SphereExplosion;
 			for (float i = -500.0f; i < 500.0f; i += 50.0f)
 			{
@@ -37,28 +37,28 @@ namespace PParallel
 					glm::vec3(i, 0.0f, -500.0f),
 					velocity,
 					lifetime,
-					m_random.genInt(50, 100),
+					m_random.genInt(100, 500),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(i, 0.0f, 500.0f),
 					velocity,
 					lifetime,
-					m_random.genInt(50, 100),
+					m_random.genInt(100, 500),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(-500.0f, 0.0f, i),
 					velocity,
 					lifetime,
-					m_random.genInt(50, 100),
+					m_random.genInt(100, 500),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(500.0f, 0.0f, i),
 					velocity,
 					lifetime,
-					m_random.genInt(50, 100),
+					m_random.genInt(100, 500),
 					tailLife,
 					explosion_t);
 			}

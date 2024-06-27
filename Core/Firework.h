@@ -33,8 +33,6 @@ namespace PParallel
 			m_vertexArray.bind();
 			m_vertexBuffer.bind();
 
-			m_vertexBuffer.bufferData(m_tail.size() * sizeof(Particle), m_tail.data(), GL_STATIC_DRAW);
-
 			// Based on how Particle is defined
 			// color: vec4
 			glEnableVertexAttribArray(0);
@@ -47,6 +45,9 @@ namespace PParallel
 			// size: float
 			glEnableVertexAttribArray(2);
 			glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(10 * sizeof(float)));
+			// lifetime: float
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(11 * sizeof(float)));
 
 			m_vertexBuffer.unbind();
 			m_vertexArray.unbind();
@@ -77,10 +78,8 @@ namespace PParallel
 				p.position += 0.001f * deltaTime * p.velocity;
 
 				// update velocity
-				// 1. apply gravity
-				p.velocity.y -= 0.001f * deltaTime * 10.0f;
-				// 2. apply air resistance
-				p.velocity -= 0.001f * deltaTime * p.velocity * 0.2f;
+				// apply air resistance
+				p.velocity -= 0.001f * deltaTime * p.velocity * 0.5f;
 
 				++idx;
 			}
@@ -90,7 +89,7 @@ namespace PParallel
 				// update position
 				m_position += 0.001f * deltaTime * m_velocity;
 
-				// 1. apply gravity
+				// apply gravity
 				m_velocity.y -= 0.001f * deltaTime * 10.0f;
 
 				// emit new particles

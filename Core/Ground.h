@@ -25,25 +25,25 @@ namespace PParallel
                 -1000.0f, 0.0f, 1000.0f,
                 0.0f, 0.0f, 0.0f,
                 1.0f,
-                0.0f,
+                INFINITY,
                 // Bottom right
                 0.1f, 0.1f, 0.1f, 1.0f,
                 1000.0f, 0.0f, 1000.0f,
                 0.0f, 0.0f, 0.0f,
                 1.0f,
-                0.0f,
+                INFINITY,
                 // Top right
                 0.1f, 0.1f, 0.1f, 1.0f,
                 1000.0f, 0.0f, -1000.0f,
                 0.0f, 0.0f, 0.0f,
                 1.0f,
-                0.0f,
+                INFINITY,
                 // Top left
                 0.1f, 0.1f, 0.1f, 1.0f,
                 -1000.0f, 0.0f, -1000.0f,
                 0.0f, 0.0f, 0.0f,
                 1.0f,
-                0.0f
+                INFINITY
             };
             m_vertexBuffer.bufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -66,6 +66,9 @@ namespace PParallel
             // size: float
             glEnableVertexAttribArray(2);
             glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(10 * sizeof(float)));
+            // lifetime: float
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)(11 * sizeof(float)));
 
             m_vertexBuffer.unbind();
             m_vertexArray.unbind();

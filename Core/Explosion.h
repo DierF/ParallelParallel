@@ -62,7 +62,7 @@ namespace PParallel
 				float x = std::cos(theta) * radiusAtY;
 				float z = std::sin(theta) * radiusAtY;
 
-				float explodeSpeed = 200.0f;
+				float explodeSpeed = glm::length(velocity);
 				res.emplace_back(color, position, glm::normalize(glm::vec3(x, y, z)) * explodeSpeed,
 					lifetime, tailSize, tailLife, ExplosionType::NoExplosion);
 			}
