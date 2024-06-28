@@ -21,9 +21,7 @@ void main()
 
     float dist = distance(u_cameraPosition, a_position) + 1.0;
 
-    float ratio = decrease(a_lifetime);
+    gl_PointSize = a_size / dist * decrease(a_lifetime);
 
-    gl_PointSize = a_size * 10.0f / dist * ratio;
-
-    FragColor = a_color * ratio;
+    FragColor = a_color;
 }

@@ -37,28 +37,28 @@ namespace PParallel
 					glm::vec3(i, 0.0f, -500.0f),
 					velocity,
 					lifetime,
-					m_random.genInt(100, 500),
+					m_random.genInt(1000, 5000),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(i, 0.0f, 500.0f),
 					velocity,
 					lifetime,
-					m_random.genInt(100, 500),
+					m_random.genInt(1000, 5000),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(-500.0f, 0.0f, i),
 					velocity,
 					lifetime,
-					m_random.genInt(100, 500),
+					m_random.genInt(1000, 5000),
 					tailLife,
 					explosion_t);
 				addFirework(m_random.genColor(),
 					glm::vec3(500.0f, 0.0f, i),
 					velocity,
 					lifetime,
-					m_random.genInt(100, 500),
+					m_random.genInt(1000, 5000),
 					tailLife,
 					explosion_t);
 			}
