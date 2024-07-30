@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -96,9 +97,9 @@ namespace PParallel
 				//m_velocity *= 0.99f;
 
 				// emit new particles
-				float cnt = 50.0f;
+				float cnt = 30.0f;
 				// golden angle in radians
-				constexpr float const phi = std::numbers::pi_v<float> * 2 * (std::numbers::phi_v<float> - 1.0f);
+				constexpr float const phi = std::numbers::pi_v<float> * 2.0f * (std::numbers::phi_v<float> - 1.0f);
 				for (float i = 0.0f; i < cnt; ++i)
 				{
 					// y goes from 1 to - 1
@@ -110,7 +111,7 @@ namespace PParallel
 					float x = std::cos(theta) * radiusAtY;
 					float z = std::sin(theta) * radiusAtY;
 					glm::vec3 position = m_position + glm::vec3(x, y, z) * m_radius;
-					m_tail.emplace_back(m_color, position, glm::vec3(0.0f), m_lifetime);
+					m_tail.emplace_back(m_color, position, glm::vec3(0.0f), std::min(m_lifetime, 1000.0f));
 				}
 			}
 		}
@@ -122,6 +123,32 @@ namespace PParallel
 
 		auto explode()
 		{
+			std::vector<std::shared_ptr<Firework>> res;
+
+			float cnt = 20.0f;
+			// golden angle in radians
+			constexpr float const phi = std::numbers::pi_v<float> * 2.0f * (std::numbers::phi_v<float> - 1.0f);
+			float explodeSpeed = 10.0f;
+			for (float i = 0.0f; i < cnt; ++i)
+			{
+				// y goes from 1 to - 1
+				float y = 1.0f - (i / (cnt - 1.0f)) * 2.0f;
+				// radius at this y height
+				float radiusAtY = std::sqrt(1.0f - y * y);
+				// golden angle increment
+				float theta = phi * i;
+				float x = std::cos(theta) * radiusAtY;
+				float z = std::sin(theta) * radiusAtY;
+				glm::vec3 velocity = glm::normalize(glm::vec3(x, y, z)) * explodeSpeed;
+				res.emplace_back(std::make_shared<Firework>(
+					m_color,
+					m_position,
+					velocity,
+					3000.0f,
+					m_radius));
+			}
+
+			return res;
 		}
 
 		void render()
