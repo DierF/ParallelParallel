@@ -10,7 +10,6 @@
 #include "Application/FileReader.h"
 
 #include "Core/CameraController.h"
-#include "Core/Explosion.h"
 #include "Core/Firework.h"
 #include "Core/Random.h"
 #include "Core/Ground.h"
@@ -27,41 +26,11 @@ namespace PParallel
 		{
 			int initialFireworkNum = std::stoi(FileReader::readFile("../InitialFireworkCount.txt"));
 
-			glm::vec3 velocity = glm::vec3(0.0f, 100.0f, 0.0f);
-			float lifetime = 3000.0f;
-			float tailLife = 3000.0f;
-			ExplosionType explosion_t = ExplosionType::SphereExplosion;
-			for (float i = -500.0f; i < 500.0f; i += 50.0f)
-			{
-				addFirework(m_random.genColor(),
-					glm::vec3(i, 0.0f, -500.0f),
-					velocity,
-					lifetime,
-					m_random.genInt(1000, 5000),
-					tailLife,
-					explosion_t);
-				addFirework(m_random.genColor(),
-					glm::vec3(i, 0.0f, 500.0f),
-					velocity,
-					lifetime,
-					m_random.genInt(1000, 5000),
-					tailLife,
-					explosion_t);
-				addFirework(m_random.genColor(),
-					glm::vec3(-500.0f, 0.0f, i),
-					velocity,
-					lifetime,
-					m_random.genInt(1000, 5000),
-					tailLife,
-					explosion_t);
-				addFirework(m_random.genColor(),
-					glm::vec3(500.0f, 0.0f, i),
-					velocity,
-					lifetime,
-					m_random.genInt(1000, 5000),
-					tailLife,
-					explosion_t);
-			}
+			addFirework(m_random.genColor(),
+				glm::vec3(0.0f, 0.0f, -500.0f),
+				glm::vec3(0.0f, 50.0f, 0.0f),
+				3000.0f,
+				0.5f);
 		}
 
 		~Scene() = default;
@@ -70,11 +39,9 @@ namespace PParallel
 						 glm::vec3 const& position,
 						 glm::vec3 const& velocity,
 						 float            lifetime,
-						 std::size_t      tailSize,
-			             float            tailLife,
-						 ExplosionType    explosion_t)
+						 float            radius)
 		{
-			m_fireworks.emplace_back(color, position, velocity, lifetime, tailSize, tailLife, explosion_t);
+			m_fireworks.emplace_back(color, position, velocity, lifetime, radius);
 		}
 
 		void popFirework()
@@ -162,23 +129,23 @@ namespace PParallel
 
 		void cleanup()
 		{
-			std::vector<Explosion::param_t> newFireworks;
-			auto iter = m_fireworks.begin();
-			while (iter != m_fireworks.end())
-			{
-				if (iter->alive())
-				{
-					++iter;
-					continue;
-				}
-				auto params = iter->explode();
-				newFireworks.insert(newFireworks.end(), params.begin(), params.end());
-				iter = m_fireworks.erase(iter);
-			}
-			for (auto const& params : newFireworks)
-			{
-				std::apply([this](auto&&... args){ addFirework(std::forward<decltype(args)>(args)...); }, params);
-			}
+			//std::vector<Explosion::param_t> newFireworks;
+			//auto iter = m_fireworks.begin();
+			//while (iter != m_fireworks.end())
+			//{
+			//	if (iter->alive())
+			//	{
+			//		++iter;
+			//		continue;
+			//	}
+			//	auto params = iter->explode();
+			//	newFireworks.insert(newFireworks.end(), params.begin(), params.end());
+			//	iter = m_fireworks.erase(iter);
+			//}
+			//for (auto const& params : newFireworks)
+			//{
+			//	std::apply([this](auto&&... args){ addFirework(std::forward<decltype(args)>(args)...); }, params);
+			//}
 		}
 
 		void render()
@@ -199,8 +166,8 @@ namespace PParallel
 
 		CameraController m_cameraController;
 
-		Ground                m_ground;
-		std::list<Firework>   m_fireworks;
+		Ground              m_ground;
+		std::list<Firework> m_fireworks;
 		
 		bool m_paused;
 

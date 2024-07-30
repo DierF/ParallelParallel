@@ -43,6 +43,8 @@ namespace PParallel
 				throw std::runtime_error("failed to initialize GLAD");
 			}
 
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -52,6 +54,7 @@ namespace PParallel
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		~Window()
