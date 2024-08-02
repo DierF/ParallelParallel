@@ -23,15 +23,10 @@ namespace PParallel
 	{
 	public:
 		Scene()
-			: m_paused(false), m_threadCount(std::thread::hardware_concurrency())
+			: m_paused(false),
+			m_initialFireworkNum(std::stoi(FileReader::readFile("../InitialFireworkCount.txt"))),
+			m_threadCount(std::thread::hardware_concurrency())
 		{
-			int initialFireworkNum = std::stoi(FileReader::readFile("../InitialFireworkCount.txt"));
-
-			addFirework(m_random.genColor(),
-				glm::vec3(0.0f, 0.0f, -250.0f),
-				glm::vec3(0.0f, 50.0f, 0.0f),
-				3000.0f,
-				0.25f);
 		}
 
 		~Scene() = default;
@@ -43,6 +38,15 @@ namespace PParallel
 						 float            radius)
 		{
 			m_fireworks.emplace_back(std::make_unique<SphereFirework>(color, position, velocity, lifetime, radius));
+		}
+
+		void addRandomFirework()
+		{
+			addFirework(m_random.genColor(),
+				glm::vec3(m_random.genFloat(-500.0f, 500.0f), 0.0f, m_random.genFloat(-500.0f, 500.0f)),
+				glm::vec3(0.0f, m_random.genFloat(25.0f, 75.0f), 0.0f),
+				m_random.genFloat(1000.0f, 5000.0f),
+				m_random.genFloat(0.1f, 1.0f));
 		}
 		 
 		void popFirework()
@@ -71,18 +75,14 @@ namespace PParallel
 			{
 				m_paused = not m_paused;
 			}
-			//if (Window::get().isJKeyPressed())
-			//{
-			//	addFirework(m_random.genInt(100, 1000),
-			//		m_random.genColor(),
-			//		static_cast<float>(m_random.genInt(1, 5)) / 100.0f,
-			//		m_random.genVec3(),
-			//		static_cast<float>(m_random.genInt(5, 10)) / 1000.0f);
-			//}
-			//if (Window::get().isKKeyPressed())
-			//{
-			//	popFirework();
-			//}
+			if (Window::get().isJKeyPressed())
+			{
+				addRandomFirework();
+			}
+			if (Window::get().isKKeyPressed())
+			{
+				popFirework();
+			}
 		}
 
 		void tickCamera(float deltaTime)
@@ -93,8 +93,8 @@ namespace PParallel
 		void tick(float deltaTime)
 		{
 			// If not much work to do, then do it in serial.
-			//if (m_fireworks.size() < m_threadCount * 100ULL)
-			//{
+			if (m_fireworks.size() < m_threadCount * 100ULL)
+			{
 				for (auto& firework : m_fireworks)
 				{
 					firework->tick(deltaTime);
@@ -102,30 +102,30 @@ namespace PParallel
 
 				cleanup();
 				return;
-			//}
-			//std::vector<std::thread> threads;
-			//for (unsigned id = 0U; id < m_threadCount; ++id)
-			//{
-			//	std::size_t first = (id + 0ULL) * m_fireworks.size() / m_threadCount;
-			//	std::size_t last  = (id + 1ULL) * m_fireworks.size() / m_threadCount;
-			//
-			//	auto func =
-			//		[](auto first, auto last, float deltaTime)
-			//	{
-			//		while (first != last)
-			//		{
-			//			first->tick(deltaTime);
-			//			++first;
-			//		}
-			//	};
-			//	threads.emplace_back(func, std::next(m_fireworks.begin(), first), std::next(m_fireworks.begin(), last), deltaTime);
-			//}
-			//for (auto& each : threads)
-			//{
-			//	each.join();
-			//}
-			//
-			//cleanup();
+			}
+			std::vector<std::thread> threads;
+			for (unsigned id = 0U; id < m_threadCount; ++id)
+			{
+				std::size_t first = (id + 0ULL) * m_fireworks.size() / m_threadCount;
+				std::size_t last  = (id + 1ULL) * m_fireworks.size() / m_threadCount;
+			
+				auto func =
+					[](auto first, auto last, float deltaTime)
+				{
+					while (first != last)
+					{
+						(*first)->tick(deltaTime);
+						++first;
+					}
+				};
+				threads.emplace_back(func, m_fireworks.begin() + first, m_fireworks.begin() + last, deltaTime);
+			} 
+			for (auto& each : threads)
+			{
+				each.join();
+			}
+			
+			cleanup();
 		}
 
 		void cleanup()
@@ -149,6 +149,11 @@ namespace PParallel
 			for (auto it = newFireworks.begin(); it != newFireworks.end(); ++it)
 			{
 				m_fireworks.emplace_back(std::move(*it));
+			}
+
+			while (m_fireworks.size() < m_initialFireworkNum)
+			{
+				addRandomFirework();
 			}
 		}
 
@@ -174,6 +179,8 @@ namespace PParallel
 		std::vector<std::unique_ptr<Firework>> m_fireworks;
 		
 		bool m_paused;
+
+		int m_initialFireworkNum;
 
 	private:
 		unsigned m_threadCount;

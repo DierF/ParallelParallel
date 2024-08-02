@@ -21,25 +21,25 @@ namespace PParallel
             float vertices[] =
             {
                 // Bottom left
-                0.05f, 0.05f, 0.05f, 1.05f,
+                0.05f, 0.05f, 0.05f, 1.0f,
                 -500.0f, 0.0f, 500.0f,
                 0.0f, 0.0f, 0.0f,
                 INFINITY,
                 1.0f,
                 // Bottom right
-                0.05f, 0.05f, 0.05f, 1.05f,
+                0.05f, 0.05f, 0.05f, 1.0f,
                 500.0f, 0.0f, 500.0f,
                 0.0f, 0.0f, 0.0f,
                 INFINITY,
                 1.0f,
                 // Top right
-                0.05f, 0.05f, 0.05f, 1.05f,
+                0.05f, 0.05f, 0.05f, 1.0f,
                 500.0f, 0.0f, -500.0f,
                 0.0f, 0.0f, 0.0f,
                 INFINITY,
                 1.0f,
                 // Top left
-                0.05f, 0.05f, 0.05f, 1.05f,
+                0.05f, 0.05f, 0.05f, 1.0f,
                 -500.0f, 0.0f, -500.0f,
                 0.0f, 0.0f, 0.0f,
                 INFINITY,
@@ -49,7 +49,7 @@ namespace PParallel
 
             unsigned indices[] =
             {
-                0, 2, 1,
+                0, 1, 2,
                 0, 2, 3
             };
             m_indexBuffer.bufferData(sizeof(indices), indices, GL_STATIC_DRAW);

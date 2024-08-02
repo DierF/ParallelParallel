@@ -55,7 +55,7 @@ namespace PParallel
             }
             if (m_surrounding)
             {
-                glm::vec3 newPosition(95.0f * std::cos(m_surroundAngle), 45.0f, 95.0f * std::sin(m_surroundAngle));
+                glm::vec3 newPosition(500.0f * std::cos(m_surroundAngle), 100.0f, 500.0f * std::sin(m_surroundAngle));
                 return newPosition - m_camera.getPosition();
             }
             else
@@ -127,7 +127,7 @@ namespace PParallel
         glm::vec2 m_lastPos = glm::vec2(0.0f);
         bool m_rotating = false;
         float m_surroundAngle = 0.0f; // in radian
-        bool m_surrounding = false;
+        bool m_surrounding = true;
 		Camera m_camera;
 	};
 }

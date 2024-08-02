@@ -8,40 +8,29 @@ namespace PParallel
 {
 	class Random
 	{
-		
-
 	public:
-		Random()
-			: m_rng(0),
-			  m_float_dist(-80.0f, 80.0f)
-		{
-		}
+		Random() = default;
 
 		~Random() = default;
 
-		int genInt(int min = 0, int max = 1000)
+		int genInt(int min, int max)
 		{
-			return m_rng() % (max - min) + min;
+			static std::mt19937 generator(std::random_device{}());
+			std::uniform_int_distribution<int> distribution(min, max);
+			return distribution(generator);
 		}
 
-		float genFloat()
+		float genFloat(float min, float max)
 		{
-			return m_float_dist(m_rng);
-		}
-
-		glm::vec3 genVec3(float y = 0.0f)
-		{
-			return glm::vec3(genFloat(), y, genFloat());
+			static std::mt19937 generator(std::random_device{}());
+			std::uniform_real_distribution<float> distribution(min, max);
+			return distribution(generator);
 		}
 
 		glm::vec4 const& genColor()
 		{
-			return brightColors[genInt(0, static_cast<int>(brightColors.size()))];
+			return brightColors[genInt(0, static_cast<int>(brightColors.size()) - 1)];
 		}
-
-	private:
-		std::mt19937                          m_rng;
-		std::uniform_real_distribution<float> m_float_dist;
 
 	public:
 		std::vector<glm::vec4> const brightColors
