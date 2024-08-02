@@ -15,16 +15,18 @@ namespace PParallel
 	class Firework
 	{
 	public:
+		Firework() = default;
+
 		Firework(glm::vec4 const& color,
 			     glm::vec3 const& position,
 			     glm::vec3 const& velocity,
 			     float            lifetime,
 				 float            radius)
 			: m_color(color),
-			m_position(position),
-			m_velocity(velocity),
-			m_lifetime(lifetime),
-			m_radius(radius)
+			  m_position(position),
+			  m_velocity(velocity),
+			  m_lifetime(lifetime),
+			  m_radius(radius)
 		{
 			m_vertexArray.bind();
 			m_vertexBuffer.bind();
@@ -49,9 +51,9 @@ namespace PParallel
 			m_vertexArray.unbind();
 		}
 
-		~Firework() = default;
+		virtual ~Firework() = default;
 
-		void tick(float deltaTime)
+		virtual void tick(float deltaTime)
 		{
 			// update lifetime
 			m_lifetime -= deltaTime;
@@ -116,14 +118,58 @@ namespace PParallel
 			}
 		}
 
-		bool alive()
+		virtual bool alive()
 		{
 			return m_lifetime > 0.0f;
 		}
 
-		auto explode()
+		virtual std::vector<std::unique_ptr<Firework>> explode()
 		{
-			std::vector<std::shared_ptr<Firework>> res;
+			return {};
+		}
+
+		virtual void render()
+		{
+			m_vertexArray.bind();
+			m_vertexBuffer.bind();
+
+			m_vertexBuffer.bufferData(m_tail.size() * sizeof(Particle), m_tail.data(), GL_STATIC_DRAW);
+
+			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(m_tail.size()) * sizeof(Particle));
+
+			m_vertexBuffer.unbind();
+			m_vertexArray.unbind();
+		}
+
+	protected:
+		VertexArray  m_vertexArray;
+		VertexBuffer m_vertexBuffer;
+
+		glm::vec4 m_color;
+		glm::vec3 m_position;
+		glm::vec3 m_velocity;
+		float     m_lifetime;
+
+		float     m_radius;
+
+		std::vector<Particle> m_tail;
+	};
+
+	class SphereFirework : public Firework
+	{
+	public:
+		SphereFirework(glm::vec4 const& color,
+					   glm::vec3 const& position,
+					   glm::vec3 const& velocity,
+					   float            lifetime,
+					   float            radius)
+			: Firework(color, position, velocity, lifetime, radius)
+		{
+		}
+
+		virtual std::vector<std::unique_ptr<Firework>> explode() override
+		{
+			std::vector<std::unique_ptr<Firework>> res;
 
 			float cnt = 20.0f;
 			// golden angle in radians
@@ -140,7 +186,7 @@ namespace PParallel
 				float x = std::cos(theta) * radiusAtY;
 				float z = std::sin(theta) * radiusAtY;
 				glm::vec3 velocity = glm::normalize(glm::vec3(x, y, z)) * explodeSpeed;
-				res.emplace_back(std::make_shared<Firework>(
+				res.emplace_back(std::make_unique<Firework>(
 					m_color,
 					m_position,
 					velocity,
@@ -150,31 +196,5 @@ namespace PParallel
 
 			return res;
 		}
-
-		void render()
-		{
-			m_vertexArray.bind();
-			m_vertexBuffer.bind();
-
-			m_vertexBuffer.bufferData(m_tail.size() * sizeof(Particle), m_tail.data(), GL_STATIC_DRAW);
-
-			glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(m_tail.size()) * sizeof(Particle));
-
-			m_vertexBuffer.unbind();
-			m_vertexArray.unbind();
-		}
-
-	private:
-		VertexArray  m_vertexArray;
-		VertexBuffer m_vertexBuffer;
-
-		glm::vec4 m_color;
-		glm::vec3 m_position;
-		glm::vec3 m_velocity;
-		float     m_lifetime;
-
-		float     m_radius;
-
-		std::vector<Particle> m_tail;
 	};
 }

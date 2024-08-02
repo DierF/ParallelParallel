@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <list>
+#include <vector>
 #include <memory>
 #include <thread>
 
@@ -42,9 +42,9 @@ namespace PParallel
 						 float            lifetime,
 						 float            radius)
 		{
-			m_fireworks.emplace_back(std::make_shared<Firework>(color, position, velocity, lifetime, radius));
+			m_fireworks.emplace_back(std::make_unique<SphereFirework>(color, position, velocity, lifetime, radius));
 		}
-
+		 
 		void popFirework()
 		{
 			if (m_fireworks.empty())
@@ -130,7 +130,7 @@ namespace PParallel
 
 		void cleanup()
 		{
-			std::vector<std::shared_ptr<Firework>> newFireworks;
+			std::vector<std::unique_ptr<Firework>> newFireworks;
 			auto iter = m_fireworks.begin();
 			while (iter != m_fireworks.end())
 			{
@@ -139,11 +139,17 @@ namespace PParallel
 					++iter;
 					continue;
 				}
-				auto params = std::move(iter->get()->explode());
-				newFireworks.insert(newFireworks.end(), params.begin(), params.end());
+				auto params = iter->get()->explode();
+				for (auto it = params.begin(); it != params.end(); ++it)
+				{
+					newFireworks.emplace_back(std::move(*it));
+				}
 				iter = m_fireworks.erase(iter);
 			}
-			m_fireworks.insert(m_fireworks.end(), newFireworks.begin(), newFireworks.end());
+			for (auto it = newFireworks.begin(); it != newFireworks.end(); ++it)
+			{
+				m_fireworks.emplace_back(std::move(*it));
+			}
 		}
 
 		void render()
@@ -165,7 +171,7 @@ namespace PParallel
 		CameraController m_cameraController;
 
 		Ground              m_ground;
-		std::list<std::shared_ptr<Firework>> m_fireworks;
+		std::vector<std::unique_ptr<Firework>> m_fireworks;
 		
 		bool m_paused;
 
